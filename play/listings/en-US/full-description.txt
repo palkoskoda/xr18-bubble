@@ -1,0 +1,36 @@
+Keep the mixer controls you use most within easy reach, even while another app is open.
+
+Set up your sound in a full mixer app on a tablet, computer or another device. On your phone, choose just the controls you need during a performance: the master volume, a DCA, one channel or a mute group. Open the floating bubble, make the change and get back to playing. Other mixer functions remain available through your usual mixer app.
+
+LARGE CONTROLS WHEN SMALL ONES ARE HARD TO READ
+
+Choose from seven control sizes, from Small to Maximum (4XL). Larger sizes enlarge the labels, level values, fader handles, signal meters and mute buttons together. This can help when small phone controls are difficult to see or touch, including for people with reduced vision.
+
+A mute group can be one large button. A channel can have a volume fader, a mute button or both. Keep only the controls you use often. Swipe between controls and scroll vertically when the largest sizes need more space.
+
+The phone and your other controller each connect to the same mixer over the local network. Choose the phone's panel layout in XR18 Bubble.
+
+YOUR ESSENTIAL MIXER CONTROLS
+
+- Select master, four DCAs, four mute groups, six buses or sixteen channels.
+- Add and remove controls with checkboxes and give them your own labels.
+- View live signal meters, including stereo master levels and peak hold.
+- See connection status; controls enable after the mixer is verified and the selected values have synchronized.
+- Remember the mixer Wi-Fi and request a connection when opening the panel. Android may ask for confirmation.
+- Use the Wi-Fi return action when the app has requested a different network. Android decides which available saved network to restore.
+- Open Mixing Station or another installed app from a configurable shortcut.
+- Stop the bubble by dragging it onto the bottom cross, through settings or from its notification.
+- Choose a system, light or dark settings theme. The floating panel keeps its dark stage appearance.
+- Use twelve offline interface languages: English, Slovak, Czech, German, Polish, Hungarian, French, Spanish, Italian, Portuguese, Dutch and Ukrainian.
+
+REQUIREMENTS AND PRIVACY
+
+Android 10 or newer and a compatible Behringer XR18/X18 or Midas MR18 mixer on local Wi-Fi are required. XR18 Bubble controls mixer settings; it does not carry audio between devices. Live controls remain disabled without a verified mixer connection.
+
+The optional bubble needs permission to display over other apps and uses a visible service notification. Android may also request nearby Wi-Fi and location permissions for connection and reading the current Wi-Fi name. The app does not use GPS. Wi-Fi behavior depends on Android and the device.
+
+Free, with no ads, accounts or analytics. Settings stay on the device; saved Wi-Fi passwords use Android Keystore-backed encryption. Mixer traffic uses the local X AIR OSC/UDP protocol.
+
+XR18 Bubble is an independent companion, not affiliated with Behringer, Midas, Music Tribe or Mixing Station.
+
+Developed by Pavol Škoda. Support: pavolskoda@azet.sk.

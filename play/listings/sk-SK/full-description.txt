@@ -1,0 +1,36 @@
+Majte najčastejšie používané ovládače mixu poruke, aj keď máte otvorenú inú aplikáciu.
+
+Celý zvuk si nastavte v plnej aplikácii pre mix na tablete, počítači alebo inom zariadení. Na telefóne si nechajte iba to, čo potrebujete počas hrania: hlasitosť mastera, DCA, jeden kanál alebo mute skupinu. Otvorte plávajúcu bublinku, urobte zmenu a pokračujte v hraní. Ostatné funkcie mixu môžete ďalej ovládať zo svojej bežnej aplikácie.
+
+VEĽKÉ OVLÁDAČE, KEĎ SA DROBNÉ ŤAŽKO ČÍTAJÚ
+
+Vyberte si zo siedmich veľkostí, od Malej až po Maximálnu (4XL). Spolu s ovládačmi sa zväčšujú názvy, číselné hodnoty, úchyty faderov, merače signálu aj tlačidlá mute. Väčšie prvky môžu pomôcť ľuďom so slabším zrakom aj každému, komu sa drobné ovládače na telefóne ťažko čítajú alebo triafajú.
+
+Mute skupina môže byť jedno veľké tlačidlo. Kanál môže mať fader hlasitosti, mute tlačidlo alebo oboje. Zobrazte si iba prvky, ktoré často používate. Medzi ovládačmi posúvajte panel vodorovne; pri najväčších veľkostiach sa dá posúvať aj zvisle.
+
+Telefón aj druhé ovládacie zariadenie sa pripájajú k rovnakému mixu cez lokálnu sieť. Rozloženie panela na telefóne si vyberiete v XR18 Bubble.
+
+NAJDÔLEŽITEJŠIE OVLÁDAČE PORUKE
+
+- Výber mastera, štyroch DCA, štyroch mute skupín, šiestich zberníc alebo šestnástich kanálov.
+- Pridávanie a odoberanie prvkov cez zaškrtávacie políčka a vlastné názvy.
+- Živé merače signálu vrátane stereo mastera a podržania špičiek.
+- Zobrazenie stavu pripojenia. Ovládanie sa sprístupní po overení mixu a načítaní aktuálnych vybraných hodnôt.
+- Zapamätanie Wi-Fi mixu a žiadosť o pripojenie pri otvorení panela. Android môže vyžadovať potvrdenie.
+- Možnosť návratu k Wi-Fi, keď si aplikácia vyžiadala inú sieť. O obnovení dostupnej uloženej siete rozhoduje Android.
+- Skratka na Mixing Station alebo inú vybranú nainštalovanú aplikáciu.
+- Vypnutie bublinky potiahnutím na spodný krížik, v nastaveniach alebo cez notifikáciu.
+- Systémový, svetlý alebo tmavý motív nastavení. Plávajúci panel si zachováva tmavý vzhľad na pódium.
+- Dvanásť jazykov dostupných offline: angličtina, slovenčina, čeština, nemčina, poľština, maďarčina, francúzština, španielčina, taliančina, portugalčina, holandčina a ukrajinčina.
+
+POŽIADAVKY A SÚKROMIE
+
+Potrebujete Android 10 alebo novší a kompatibilný mix Behringer XR18/X18 alebo Midas MR18 v lokálnej Wi-Fi sieti. XR18 Bubble mení nastavenia mixu; neprenáša zvuk medzi zariadeniami. Bez overeného spojenia s mixom zostávajú živé ovládače neaktívne.
+
+Voliteľná bublinka potrebuje povolenie na zobrazenie nad inými aplikáciami a používa viditeľnú notifikáciu služby. Android môže žiadať aj prístup k Wi-Fi zariadeniam v okolí a polohu na pripojenie a čítanie názvu aktuálnej Wi-Fi. Aplikácia nepoužíva GPS. Správanie Wi-Fi závisí od Androidu a zariadenia.
+
+Bezplatne, bez reklám, účtov a analytiky. Nastavenia zostávajú v zariadení; uložené heslá Wi-Fi chráni šifrovanie cez Android Keystore. Komunikácia s mixom používa lokálny protokol X AIR OSC/UDP.
+
+XR18 Bubble je nezávislá doplnková aplikácia bez prepojenia so spoločnosťami Behringer, Midas, Music Tribe či aplikáciou Mixing Station.
+
+Vyvinul Pavol Škoda. Podpora: pavolskoda@azet.sk.
