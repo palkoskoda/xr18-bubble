@@ -2,6 +2,8 @@
 
 Status is intentionally conservative. Version 0.4.0 (version code 5) has a validated unsigned release App Bundle and a final debug APK, but it does not contain a signed production bundle or publisher credentials.
 
+Current distribution is the public beta on [GitHub Releases](https://github.com/palkoskoda/xr18-bubble/releases/tag/v0.4.0-beta). This checklist is for a possible future Google Play submission.
+
 ## Completed in repository
 
 - [x] Store listing draft in English and Slovak with Play length limits checked.
@@ -77,6 +79,6 @@ Use the exact keystore/password handling supported by the publisher's JDK; never
 
 The materials above are release preparation only. They do not mean the app is Play-ready, approved, or published.
 
-## Prepared GitHub Pages destination
+## Published GitHub Pages destination
 
-Account supplied by the user: `palkoskoda`. The proposed repository is `xr18-bubble`; planned privacy URL: `https://palkoskoda.github.io/xr18-bubble/privacy.html`. Files are prepared locally in `site/`, not published. Deploy and verify the real HTTPS URL before using it in Play Console.
+Account: `palkoskoda`. Public repository: `https://github.com/palkoskoda/xr18-bubble`. Website: `https://palkoskoda.github.io/xr18-bubble/`. Public privacy policy: `https://palkoskoda.github.io/xr18-bubble/privacy.html`. HTTPS and the served source/assets were verified after deployment. Source lives in `site/` on main and publishes from the root of gh-pages.

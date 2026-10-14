@@ -1,6 +1,6 @@
 # Google Play store listing (draft)
 
-This is a release draft for version 0.4.0 (version code 5). Verify the legal publisher identity and deploy the public privacy-policy URL before publishing. The app is an independent companion for compatible X AIR mixers; it is not made by, endorsed by, or affiliated with Behringer or Mixing Station.
+This is a release draft for version 0.4.0 (version code 5). Verify the legal publisher identity and confirm the public privacy-policy URL in Play Console before publishing. The app is an independent companion for compatible X AIR mixers; it is not made by, endorsed by, or affiliated with Behringer or Mixing Station.
 
 ## Publisher metadata
 
@@ -9,7 +9,7 @@ This is a release draft for version 0.4.0 (version code 5). Verify the legal pub
 - Product developer credit: Pavol Škoda
 - Play developer/legal name: `Pavol Škoda` (verify against the Play Console legal account)
 - Support email: pavolskoda@azet.sk
-- Privacy policy URL: `https://palkoskoda.github.io/xr18-bubble/privacy.html` (planned; not live yet)
+- Privacy policy URL: `https://palkoskoda.github.io/xr18-bubble/privacy.html` (published on GitHub Pages)
 - Application category: Music & Audio
 - Content rating: Complete the Play Console questionnaire
 
@@ -77,6 +77,6 @@ Vyvinul Pavol Škoda.
 
 ## Listing assets and release state
 
-Seven native 1080×1920 phone screenshots for en-US and sk-SK are captured and visually verified in `play/assets/screenshots/`: mixer selection, control selection, settings and an English floating-panel demo. The XR18 Demo profile and moving signal meters use a local simulator; these captures do not represent additional real-hardware testing. Do not use Behringer, Music Tribe, Mixing Station, or other third-party marks without permission. The repository contains the original icon and feature graphic, the support contact is `pavolskoda@azet.sk`, and the public privacy URL is planned but not live yet.
+Seven native 1080×1920 phone screenshots for en-US and sk-SK are captured and visually verified in `play/assets/screenshots/`: mixer selection, control selection, settings and an English floating-panel demo. The XR18 Demo profile and moving signal meters use a local simulator; these captures do not represent additional real-hardware testing. Do not use Behringer, Music Tribe, Mixing Station, or other third-party marks without permission. The repository contains the original icon and feature graphic, the support contact is `pavolskoda@azet.sk`, and the privacy policy is published on GitHub Pages.
 
 The release contains offline UI translations for English, Slovak, Czech, German, Polish, Hungarian, French, Spanish, Italian, Portuguese, Dutch, and Ukrainian. Verify each store listing translation in Play Console rather than assuming the in-app language list is sufficient.

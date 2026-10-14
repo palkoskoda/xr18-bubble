@@ -4,9 +4,9 @@
 **Product developer credit:** Pavol Škoda  
 **Legal publisher/developer:** Pavol Škoda (verify against Play Console publisher details)  
 **Contact:** pavolskoda@azet.sk  
-**Public URL:** https://palkoskoda.github.io/xr18-bubble/privacy.html (planned; not deployed)
+**Public URL:** https://palkoskoda.github.io/xr18-bubble/privacy.html (published on GitHub Pages)
 
-XR18 Bubble is a local Android companion for a compatible X AIR mixer. The product is developed by Pavol Škoda. This draft must be published at a stable public URL and updated with the publisher's verified legal identity and contact details before a Google Play submission.
+XR18 Bubble is a local Android companion for a compatible X AIR mixer. The product is developed by Pavol Škoda. The public policy is published on GitHub Pages. Review this Play submission draft against the final publisher details before a Google Play submission.
 
 ## Information used on the device
 
