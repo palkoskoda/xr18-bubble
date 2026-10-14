@@ -1,0 +1,15 @@
+build/
+dist/
+reference/
+feedback/
+integrated/
+__pycache__/
+*.py[cod]
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.log
+.env
+.env.*
+local.properties

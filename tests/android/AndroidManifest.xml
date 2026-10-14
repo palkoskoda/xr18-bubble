@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="sk.palko.xr18bubble.returnwifitest">
+    <uses-sdk android:minSdkVersion="29" android:targetSdkVersion="36" />
+    <application android:label="XR18 Return Wi-Fi Test" android:debuggable="true" />
+    <instrumentation android:name="sk.palko.xr18bubble.returnwifitest.ReturnWifiInstrumentation"
+        android:targetPackage="sk.palko.xr18bubble" android:label="XR18 return Wi-Fi state test" />
+</manifest>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>XR18 Bubble original app icon</title>
+  <rect width="512" height="512" fill="#191D23"/>
+  <line x1="120" y1="96" x2="120" y2="416" stroke="#596573" stroke-width="5"/><line x1="120" y1="172" x2="120" y2="416" stroke="#429DE6" stroke-width="5"/>
+<line x1="220" y1="96" x2="220" y2="416" stroke="#596573" stroke-width="5"/><line x1="220" y1="262" x2="220" y2="416" stroke="#429DE6" stroke-width="5"/>
+<line x1="320" y1="96" x2="320" y2="416" stroke="#596573" stroke-width="5"/><line x1="320" y1="202" x2="320" y2="416" stroke="#429DE6" stroke-width="5"/>
+<line x1="420" y1="96" x2="420" y2="416" stroke="#596573" stroke-width="5"/><line x1="420" y1="317" x2="420" y2="416" stroke="#429DE6" stroke-width="5"/>
+  <g>
+    <circle cx="256" cy="255" r="105" fill="#1F5C97" stroke="#429DE6" stroke-width="4"/>
+    <path d="M160 272a96 96 0 0 0 192 0" fill="none" stroke="#75BCEC" stroke-width="5"/>
+    <g stroke="#B2D7F4" stroke-width="3" fill="#F4F7FA">
+      <line x1="221" y1="203" x2="221" y2="307"/><circle cx="221" cy="247" r="7"/>
+      <line x1="256" y1="203" x2="256" y2="307"/><circle cx="256" cy="266" r="7"/>
+      <line x1="291" y1="203" x2="291" y2="307"/><circle cx="291" cy="235" r="7"/>
+    </g>
+  </g>
+</svg>
