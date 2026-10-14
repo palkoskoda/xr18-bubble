@@ -88,6 +88,11 @@
     <string name="size_small">Pequeno</string>
     <string name="size_medium">Médio</string>
     <string name="size_large">Grande</string>
+    <string name="size_xlarge">Extragrande (XL)</string>
+    <string name="size_xxlarge">Muito grande (2XL)</string>
+    <string name="size_huge">Enorme (3XL)</string>
+    <string name="size_maximum">Máximo (4XL)</string>
+    <string name="large_controls_hint">Com controlos muito grandes, deslize na horizontal entre eles e na vertical sobre um título ou botão para deslocar o painel.</string>
     <string name="appearance">Aspeto</string>
     <string name="automatic_connection">Ligar ao abrir</string>
     <string name="automatic_connection_hint">Ao abrir o painel, a aplicação solicita a ligação ao Wi-Fi da mesa e carrega os valores atuais dos controlos.</string>

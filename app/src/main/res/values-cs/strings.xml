@@ -88,6 +88,11 @@
     <string name="size_small">Malá</string>
     <string name="size_medium">Střední</string>
     <string name="size_large">Velká</string>
+    <string name="size_xlarge">Extra velká (XL)</string>
+    <string name="size_xxlarge">Velmi velká (2XL)</string>
+    <string name="size_huge">Obrovská (3XL)</string>
+    <string name="size_maximum">Maximální (4XL)</string>
+    <string name="large_controls_hint">U velmi velkých ovladačů posouvej panel vodorovně mezi ovladači a svisle přes název nebo tlačítko.</string>
     <string name="appearance">Vzhled</string>
     <string name="automatic_connection">Připojit při otevření</string>
     <string name="automatic_connection_hint">Při otevření panelu požádat o Wi-Fi mixu a načíst aktuální hodnoty ovladačů.</string>

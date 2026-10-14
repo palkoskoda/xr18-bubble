@@ -88,6 +88,11 @@
     <string name="size_small">Klein</string>
     <string name="size_medium">Middelgroot</string>
     <string name="size_large">Groot</string>
+    <string name="size_xlarge">Extra groot (XL)</string>
+    <string name="size_xxlarge">Zeer groot (2XL)</string>
+    <string name="size_huge">Enorm (3XL)</string>
+    <string name="size_maximum">Maximaal (4XL)</string>
+    <string name="large_controls_hint">Veeg bij zeer grote bedieningselementen horizontaal om ertussen te wisselen. Veeg over een titel of knop om verticaal te scrollen.</string>
     <string name="appearance">Uiterlijk</string>
     <string name="automatic_connection">Verbinden bij openen</string>
     <string name="automatic_connection_hint">Bij het openen van het paneel vraagt de app verbinding met de wifi van de mixer aan en laadt de huidige waarden van de regelaars.</string>

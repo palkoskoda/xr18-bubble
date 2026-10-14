@@ -32,7 +32,10 @@ public final class OverlayService extends Service implements MixerClient.Listene
     private AlertDialog returnDialog;
     private Boolean drawnReady;
     private long wifiGeneration;
-    private View window,statusDot;
+    private View window,statusDot,dismissTarget;
+    private TextView dismissCircle;
+    private boolean dismissArmed;
+    private float dismissCenterX,dismissCenterY;
     private WindowManager.LayoutParams params;
     private TextView statusView;
     private BubbleView bubble;
@@ -168,14 +171,38 @@ public final class OverlayService extends Service implements MixerClient.Listene
         returnDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);returnDialog.setOnDismissListener(d->{returnDialog=null;if(window!=null)window.setVisibility(View.VISIBLE);});returnDialog.show();
     }
     private Button tool(String text,String description,Runnable click){Button button=Ui.button(this,text,Ui.BG);button.setTextSize(17);button.setContentDescription(description);button.setOnClickListener(v->click.run());return button;}
+    /** Fixed labels/actions surround a scrollable body, so large controls remain reachable. */
+    private int textHeight(float sp,int lines,int paddingDp){Paint p=new Paint();p.setTextSize(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_SP,sp,getResources().getDisplayMetrics()));Paint.FontMetrics fm=p.getFontMetrics();return (int)Math.ceil((fm.bottom-fm.top)*lines/getResources().getDisplayMetrics().density)+paddingDp;}
+    private int nameHeight(float scale){return Math.max(Math.round(18*scale),textHeight(10*scale,scale>1.35f?2:1,2));}
+    private int valueHeight(float scale){return Math.max(Math.round(20*scale),textHeight(14*scale,1,2));}
+    private int muteHeight(float scale){return Math.max(PanelSizing.muteHeightDp(profile.controlSize()),textHeight(11*scale,2,8));}
+    private void fitText(TextView view,float sp){view.setTextSize(sp);view.setAutoSizeTextTypeUniformWithConfiguration(Math.max(8,(int)(sp*.72f)),Math.max(9,(int)Math.ceil(sp)),1,android.util.TypedValue.COMPLEX_UNIT_SP);}
+    private void hideDismissTarget(){if(dismissTarget!=null){try{wm.removeView(dismissTarget);}catch(IllegalArgumentException ignored){}dismissTarget=null;}dismissCircle=null;dismissArmed=false;if(bubble!=null)bubble.setAlpha(1f);}
+    private void showDismissTarget(int screenW,int screenH){
+        if(dismissTarget!=null)return;
+        LinearLayout target=Ui.column(this);target.setGravity(Gravity.CENTER_HORIZONTAL);
+        dismissCircle=Ui.text(this,"×",42,Ui.RED);dismissCircle.setGravity(Gravity.CENTER);dismissCircle.setBackground(Ui.bg(Ui.CARD,Ui.dp(this,40)));dismissCircle.setContentDescription(s("stop_bubble"));target.addView(dismissCircle,new LinearLayout.LayoutParams(Ui.dp(this,80),Ui.dp(this,80)));
+        TextView caption=Ui.text(this,s("stop_bubble"),12,Ui.TEXT);caption.setGravity(Gravity.CENTER);caption.setMaxLines(2);caption.setPadding(Ui.dp(this,8),0,Ui.dp(this,8),0);caption.setBackground(Ui.bg(Ui.BG,Ui.dp(this,8)));LinearLayout.LayoutParams label=new LinearLayout.LayoutParams(-2,-2);label.topMargin=Ui.dp(this,6);target.addView(caption,label);
+        WindowManager.LayoutParams drop=new WindowManager.LayoutParams(Ui.dp(this,200),Ui.dp(this,126),WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,PixelFormat.TRANSLUCENT);drop.gravity=Gravity.TOP|Gravity.LEFT;drop.x=(screenW-drop.width)/2;drop.y=Math.max(0,screenH-drop.height-Ui.dp(this,48));dismissCenterX=drop.x+drop.width/2f;dismissCenterY=drop.y+Ui.dp(this,40);
+        try{wm.addView(target,drop);dismissTarget=target;}catch(RuntimeException ignored){dismissCircle=null;}
+    }
+    private void updateDismissTarget(){
+        if(dismissTarget==null)return;float dx=params.x+params.width/2f-dismissCenterX,dy=params.y+params.height/2f-dismissCenterY;boolean armed=dx*dx+dy*dy<=Math.pow(Ui.dp(this,64),2);
+        if(armed!=dismissArmed){dismissArmed=armed;dismissCircle.setBackground(Ui.bg(armed?Ui.RED:Ui.CARD,Ui.dp(this,40)));dismissCircle.setTextColor(armed?Ui.TEXT:Ui.RED);bubble.setAlpha(armed?.5f:1f);if(armed)bubble.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);}
+    }
     private void show(boolean open){
-        if(window!=null){wm.removeView(window);window=null;}strips.clear();statusView=null;statusDot=null;drawnReady=null;bubble=null;expanded=open;
+        hideDismissTarget();if(window!=null){wm.removeView(window);window=null;}strips.clear();statusView=null;statusDot=null;drawnReady=null;bubble=null;expanded=open;
         float density=getResources().getDisplayMetrics().density;int screenW=getResources().getDisplayMetrics().widthPixels,screenH=getResources().getDisplayMetrics().heightPixels;
         List<XAirProtocol.Control> faders=new ArrayList<>(),buttons=new ArrayList<>();for(XAirProtocol.Control c:profile.selected()){if(profile.volume(c))faders.add(c);else if(profile.mute(c))buttons.add(c);}
         mixer.setMetersEnabled(open&&!faders.isEmpty());if(!open){meters.clear();meterStamps.clear();}
+        String size=profile.controlSize();float scale=PanelSizing.controlScale(size),headerScale=Math.min(2.2f,scale);
         int availableWidth=Math.max(96,(int)(screenW/density)-16),availableHeight=Math.max(96,(int)(screenH/density)-64);
-        int returnHeight=wifiBorrowed&&wifiRequest!=null?34:0;
-        int widthDp=PanelSizing.panelWidthDp(faders.size(),buttons.size(),profile.controlSize(),availableWidth),heightDp=Math.min(availableHeight,PanelSizing.panelHeightDp(faders.size(),buttons.size(),profile.controlSize(),availableHeight-returnHeight)+returnHeight);
+        int headerHeight=Math.max(PanelSizing.headerHeightDp(size),textHeight(17*Math.min(2,scale),1,0)),statusHeight=Math.max(PanelSizing.statusHeightDp(size),textHeight(9*headerScale,1,0));
+        int muteHeight=muteHeight(scale);boolean stripMute=false;for(XAirProtocol.Control c:faders)stripMute|=profile.mute(c);
+        int faderHeight=Math.max(PanelSizing.faderHeightDp(size),nameHeight(scale)+valueHeight(scale)+(stripMute?muteHeight+3:0)+Math.round(80*scale));
+        int returnHeight=wifiBorrowed&&wifiRequest!=null?Math.max(PanelSizing.returnHeightDp(size),textHeight(10*headerScale,1,8)+6):0;
+        int bodyHeight=(faders.isEmpty()?0:faderHeight)+(buttons.isEmpty()?0:muteHeight+6);if(bodyHeight==0)bodyHeight=80;
+        int widthDp=PanelSizing.panelWidthDp(faders.size(),buttons.size(),size,availableWidth),heightDp=Math.min(availableHeight,16+headerHeight+statusHeight+bodyHeight+returnHeight),stripWidth=Math.min(PanelSizing.stripWidth(size),widthDp-16);
         int diameter=PanelSizing.bubbleDiameter(profile.bubbleSize()),width=open?Ui.dp(this,widthDp):Ui.dp(this,diameter);
         params=new WindowManager.LayoutParams(width,Ui.dp(this,open?heightDp:diameter),WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             open?WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH:WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,PixelFormat.TRANSLUCENT);
@@ -186,29 +213,38 @@ public final class OverlayService extends Service implements MixerClient.Listene
             bubble=new BubbleView();bubble.setElevation(Ui.dp(this,5));window=bubble;
             bubble.setOnTouchListener(new View.OnTouchListener(){float x,y;int ox,oy;boolean moved;
                 public boolean onTouch(View v,MotionEvent event){
-                    if(event.getAction()==MotionEvent.ACTION_DOWN){x=event.getRawX();y=event.getRawY();ox=params.x;oy=params.y;moved=false;return true;}
-                    if(event.getAction()==MotionEvent.ACTION_MOVE){if(Math.abs(event.getRawX()-x)+Math.abs(event.getRawY()-y)>Ui.dp(OverlayService.this,6))moved=true;params.x=Math.max(0,Math.min(screenW-width,ox+(int)(event.getRawX()-x)));params.y=Math.max(0,Math.min(screenH-params.height-Ui.dp(OverlayService.this,48),oy+(int)(event.getRawY()-y)));wm.updateViewLayout(window,params);return true;}
-                    if(event.getAction()==MotionEvent.ACTION_UP){if(!moved){openControls();return true;}params.x=params.x+width/2<screenW/2?0:screenW-width;profile.setPosition("x",params.x);profile.setPosition("y",params.y);wm.updateViewLayout(window,params);return true;}return true;
+                    switch(event.getActionMasked()){
+                        case MotionEvent.ACTION_DOWN:x=event.getRawX();y=event.getRawY();ox=params.x;oy=params.y;moved=false;return true;
+                        case MotionEvent.ACTION_MOVE:
+                            if(Math.abs(event.getRawX()-x)+Math.abs(event.getRawY()-y)>Ui.dp(OverlayService.this,6))moved=true;
+                            if(moved){showDismissTarget(screenW,screenH);params.x=Math.max(0,Math.min(screenW-width,ox+(int)(event.getRawX()-x)));params.y=Math.max(0,Math.min(screenH-params.height-Ui.dp(OverlayService.this,48),oy+(int)(event.getRawY()-y)));wm.updateViewLayout(window,params);updateDismissTarget();}return true;
+                        case MotionEvent.ACTION_UP:
+                            boolean stop=moved&&dismissArmed;hideDismissTarget();if(stop){stopSelf();return true;}if(!moved){openControls();return true;}params.x=params.x+width/2<screenW/2?0:screenW-width;profile.setPosition("x",params.x);profile.setPosition("y",params.y);wm.updateViewLayout(window,params);return true;
+                        case MotionEvent.ACTION_CANCEL:hideDismissTarget();params.x=ox;params.y=oy;wm.updateViewLayout(window,params);return true;
+                    }return true;
                 }
             });
         }else{
             LinearLayout panel=Ui.column(this);panel.setPadding(Ui.dp(this,8),Ui.dp(this,8),Ui.dp(this,8),Ui.dp(this,8));panel.setBackground(Ui.bg(Ui.BG,Ui.dp(this,10)));panel.setElevation(Ui.dp(this,10));panel.setFocusableInTouchMode(true);
             panel.setOnKeyListener((v,key,event)->{if(key==KeyEvent.KEYCODE_BACK&&event.getAction()==KeyEvent.ACTION_UP){closePanel();return true;}return false;});panel.setOnTouchListener((v,event)->{if(event.getAction()==MotionEvent.ACTION_OUTSIDE){closePanel();return true;}return false;});
-            LinearLayout header=Ui.row(this);statusDot=new View(this);LinearLayout.LayoutParams dotParams=new LinearLayout.LayoutParams(Ui.dp(this,7),Ui.dp(this,7));dotParams.rightMargin=Ui.dp(this,5);header.addView(statusDot,dotParams);
-            TextView title=Ui.title(this,widthDp>=128?(profile.get("name").isEmpty()?"XR18":profile.get("name")):"",10);title.setSingleLine();title.setEllipsize(TextUtils.TruncateAt.END);header.addView(title,new LinearLayout.LayoutParams(0,-2,1));
-            header.addView(tool("⋯",s("mixers"),()->launchMain(false,0)),new LinearLayout.LayoutParams(Ui.dp(this,28),Ui.dp(this,24)));
-            header.addView(tool("×",s("bubble"),()->closePanel()),new LinearLayout.LayoutParams(Ui.dp(this,24),Ui.dp(this,24)));panel.addView(header,new LinearLayout.LayoutParams(-1,Ui.dp(this,24)));
-            statusView=Ui.text(this,"",9,Ui.GOLD);statusView.setSingleLine();statusView.setEllipsize(TextUtils.TruncateAt.END);statusView.setOnClickListener(v->ensureConnection());panel.addView(statusView,new LinearLayout.LayoutParams(-1,Ui.dp(this,12)));
+            LinearLayout header=Ui.row(this);statusDot=new View(this);LinearLayout.LayoutParams dotParams=new LinearLayout.LayoutParams(Ui.dp(this,7*Math.min(2,scale)),Ui.dp(this,7*Math.min(2,scale)));dotParams.rightMargin=Ui.dp(this,5);header.addView(statusDot,dotParams);
+            TextView title=Ui.title(this,widthDp>=128?(profile.get("name").isEmpty()?"XR18":profile.get("name")):"",10);title.setTextSize(10*headerScale);title.setSingleLine();title.setEllipsize(TextUtils.TruncateAt.END);header.addView(title,new LinearLayout.LayoutParams(0,-2,1));
+            Button options=tool("⋯",s("mixers"),()->launchMain(false,0)),close=tool("×",s("bubble"),()->closePanel());options.setTextSize(17*Math.min(2,scale));close.setTextSize(17*Math.min(2,scale));
+            header.addView(options,new LinearLayout.LayoutParams(Ui.dp(this,Math.round(headerHeight*28f/24)),Ui.dp(this,headerHeight)));
+            header.addView(close,new LinearLayout.LayoutParams(Ui.dp(this,headerHeight),Ui.dp(this,headerHeight)));panel.addView(header,new LinearLayout.LayoutParams(-1,Ui.dp(this,headerHeight)));
+            statusView=Ui.text(this,"",9,Ui.GOLD);statusView.setTextSize(9*headerScale);statusView.setSingleLine();statusView.setEllipsize(TextUtils.TruncateAt.END);statusView.setOnClickListener(v->ensureConnection());panel.addView(statusView,new LinearLayout.LayoutParams(-1,Ui.dp(this,statusHeight)));
+            ScrollView vertical=new ScrollView(this);vertical.setFillViewport(false);vertical.setVerticalScrollBarEnabled(bodyHeight>heightDp-headerHeight-statusHeight-returnHeight-16);LinearLayout body=Ui.column(this);
             if(!faders.isEmpty()){
-                HorizontalScrollView scroll=new HorizontalScrollView(this);scroll.setHorizontalScrollBarEnabled(faders.size()*PanelSizing.stripWidth(profile.controlSize())>widthDp);LinearLayout row=Ui.row(this);row.setGravity(Gravity.TOP);
-                for(XAirProtocol.Control c:faders){Strip strip=new Strip(c,true);strips.add(strip);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(Ui.dp(this,PanelSizing.stripWidth(profile.controlSize())),-1);lp.rightMargin=Ui.dp(this,6);row.addView(strip.view,lp);}scroll.addView(row,new HorizontalScrollView.LayoutParams(-2,-1));panel.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
+                HorizontalScrollView scroll=new HorizontalScrollView(this);scroll.setHorizontalScrollBarEnabled(faders.size()*(stripWidth+6)>widthDp-16);LinearLayout row=Ui.row(this);row.setGravity(Gravity.TOP);
+                for(XAirProtocol.Control c:faders){Strip strip=new Strip(c,true);strips.add(strip);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(Ui.dp(this,stripWidth),-1);lp.rightMargin=Ui.dp(this,6);row.addView(strip.view,lp);}scroll.addView(row,new HorizontalScrollView.LayoutParams(-2,-1));body.addView(scroll,new LinearLayout.LayoutParams(-1,Ui.dp(this,faderHeight)));
             }
             if(!buttons.isEmpty()){
-                HorizontalScrollView scroll=new HorizontalScrollView(this);scroll.setHorizontalScrollBarEnabled(buttons.size()*PanelSizing.stripWidth(profile.controlSize())>widthDp);LinearLayout row=Ui.row(this);
-                for(XAirProtocol.Control c:buttons){Strip strip=new Strip(c,false);strips.add(strip);int buttonWidth=buttons.size()==1?widthDp-16:PanelSizing.stripWidth(profile.controlSize());LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(Ui.dp(this,buttonWidth),Ui.dp(this,48));lp.rightMargin=Ui.dp(this,6);row.addView(strip.view,lp);}scroll.addView(row);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,Ui.dp(this,48));lp.topMargin=Ui.dp(this,6);panel.addView(scroll,lp);
+                HorizontalScrollView scroll=new HorizontalScrollView(this);scroll.setHorizontalScrollBarEnabled(buttons.size()*(stripWidth+6)>widthDp-16);LinearLayout row=Ui.row(this);
+                for(XAirProtocol.Control c:buttons){Strip strip=new Strip(c,false);strips.add(strip);int buttonWidth=buttons.size()==1?widthDp-16:stripWidth;LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(Ui.dp(this,buttonWidth),Ui.dp(this,muteHeight));lp.rightMargin=Ui.dp(this,6);row.addView(strip.view,lp);}scroll.addView(row,new HorizontalScrollView.LayoutParams(-2,-1));LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,Ui.dp(this,muteHeight));lp.topMargin=Ui.dp(this,6);body.addView(scroll,lp);
             }
-            if(faders.isEmpty()&&buttons.isEmpty()){Button choose=Ui.button(this,s("edit_controls"),Ui.CARD);choose.setTextSize(11);choose.setOnClickListener(v->launchMain(false,1));panel.addView(choose,new LinearLayout.LayoutParams(-1,0,1));}
-            if(returnHeight>0){Button back=Ui.button(this,"↩ "+returnWifiLabel(),Ui.LINE);back.setTextSize(10);back.setSingleLine();back.setEllipsize(TextUtils.TruncateAt.END);back.setContentDescription(returnWifiLabel());back.setOnClickListener(v->returnPreviousWifi());LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,Ui.dp(this,28));lp.topMargin=Ui.dp(this,6);panel.addView(back,lp);}
+            if(faders.isEmpty()&&buttons.isEmpty()){Button choose=Ui.button(this,s("edit_controls"),Ui.CARD);choose.setTextSize(11);choose.setOnClickListener(v->launchMain(false,1));body.addView(choose,new LinearLayout.LayoutParams(-1,Ui.dp(this,80)));}
+            vertical.addView(body,new ScrollView.LayoutParams(-1,-2));panel.addView(vertical,new LinearLayout.LayoutParams(-1,0,1));
+            if(returnHeight>0){Button back=Ui.button(this,"↩ "+returnWifiLabel(),Ui.LINE);fitText(back,10*headerScale);back.setSingleLine();back.setEllipsize(TextUtils.TruncateAt.END);back.setContentDescription(returnWifiLabel());back.setOnClickListener(v->returnPreviousWifi());LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,Ui.dp(this,returnHeight-6));lp.topMargin=Ui.dp(this,6);panel.addView(back,lp);}
             window=panel;
         }
         try{if(returnDialog!=null)window.setVisibility(View.INVISIBLE);wm.addView(window,params);if(open&&returnDialog==null)window.requestFocus();}catch(Exception e){window=null;stopSelf();}refresh();
@@ -216,22 +252,22 @@ public final class OverlayService extends Service implements MixerClient.Listene
     private final class Strip {
         final XAirProtocol.Control control;final LinearLayout view;final TextView value;final Button mute;final FaderView fader;final boolean withFader;Boolean lastMuted;
         Strip(XAirProtocol.Control c,boolean volume){
-            control=c;withFader=volume;view=Ui.column(OverlayService.this);view.setBackground(Ui.bg(Ui.CARD,Ui.dp(OverlayService.this,3)));
+            float scale=PanelSizing.controlScale(profile.controlSize());control=c;withFader=volume;view=Ui.column(OverlayService.this);view.setBackground(Ui.bg(Ui.CARD,Ui.dp(OverlayService.this,3)));
             if(volume){
-                TextView name=Ui.title(OverlayService.this,profile.label(OverlayService.this,c),10);name.setTextColor(Ui.BG);name.setBackgroundColor(Ui.accent(c));name.setGravity(Gravity.CENTER);name.setSingleLine();name.setEllipsize(TextUtils.TruncateAt.END);view.addView(name,new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,18)));
-                value=Ui.title(OverlayService.this,"—",14);value.setTypeface(android.graphics.Typeface.MONOSPACE);value.setGravity(Gravity.CENTER);view.addView(value,new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,20)));
-                fader=new FaderView(OverlayService.this,v->{if(ready()&&fresh(c.faderPath)!=null)mixer.set(c.faderPath,Float.valueOf(v));});LinearLayout.LayoutParams rail=new LinearLayout.LayoutParams(-1,0,1);rail.leftMargin=Ui.dp(OverlayService.this,5);rail.rightMargin=Ui.dp(OverlayService.this,5);view.addView(fader,rail);
+                TextView name=Ui.title(OverlayService.this,profile.label(OverlayService.this,c),10);name.setTextSize(10*scale);name.setTextColor(Ui.BG);name.setBackgroundColor(Ui.accent(c));name.setGravity(Gravity.CENTER);name.setMaxLines(scale>1.35f?2:1);name.setEllipsize(TextUtils.TruncateAt.END);view.addView(name,new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,nameHeight(scale))));
+                value=Ui.title(OverlayService.this,"—",14);fitText(value,14*scale);value.setSingleLine();value.setTypeface(android.graphics.Typeface.MONOSPACE);value.setGravity(Gravity.CENTER);view.addView(value,new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,valueHeight(scale))));
+                fader=new FaderView(OverlayService.this,v->{if(ready()&&fresh(c.faderPath)!=null)mixer.set(c.faderPath,Float.valueOf(v));});fader.setControlScale(scale);LinearLayout.LayoutParams rail=new LinearLayout.LayoutParams(-1,0,1);rail.leftMargin=Ui.dp(OverlayService.this,5);rail.rightMargin=Ui.dp(OverlayService.this,5);view.addView(fader,rail);
             }else{value=null;fader=null;}
             if(profile.mute(c)){
-                mute=Ui.button(OverlayService.this,"—",Ui.LINE);mute.setTextSize(volume?10:11);mute.setMaxLines(2);mute.setEllipsize(TextUtils.TruncateAt.END);mute.setContentDescription(profile.label(OverlayService.this,c)+" "+s("mute"));mute.setOnClickListener(v->{Object raw=fresh(c.mutePath);Long pending=pendingMute.get(c.mutePath);if(ready()&&raw instanceof Number&&(pending==null||SystemClock.elapsedRealtime()-pending>800)){pendingMute.put(c.mutePath,SystemClock.elapsedRealtime());mixer.set(c.mutePath,c.muteValue(!c.isMuted(((Number)raw).intValue())));update(ready());}});
-                LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,48));if(volume){lp.leftMargin=Ui.dp(OverlayService.this,3);lp.rightMargin=Ui.dp(OverlayService.this,3);lp.bottomMargin=Ui.dp(OverlayService.this,3);}view.addView(mute,lp);
+                mute=Ui.button(OverlayService.this,"—",Ui.LINE);fitText(mute,(volume?10:11)*scale);mute.setMaxLines(2);mute.setEllipsize(TextUtils.TruncateAt.END);mute.setContentDescription(profile.label(OverlayService.this,c)+" "+s("mute"));mute.setOnClickListener(v->{Object raw=fresh(c.mutePath);Long pending=pendingMute.get(c.mutePath);if(ready()&&raw instanceof Number&&(pending==null||SystemClock.elapsedRealtime()-pending>800)){pendingMute.put(c.mutePath,SystemClock.elapsedRealtime());mixer.set(c.mutePath,c.muteValue(!c.isMuted(((Number)raw).intValue())));update(ready());}});
+                LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,muteHeight(scale)));if(volume){lp.leftMargin=Ui.dp(OverlayService.this,3);lp.rightMargin=Ui.dp(OverlayService.this,3);lp.bottomMargin=Ui.dp(OverlayService.this,3);}view.addView(mute,lp);
             }else mute=null;
         }
         void update(boolean ready){
             Object raw=fresh(control.faderPath);Float v=raw instanceof Number?((Number)raw).floatValue():null;if(value!=null)Ui.updateText(value,FaderView.format(v));if(fader!=null)fader.update(v,ready);
             updateMeter();
             if(mute!=null){Object m=fresh(control.mutePath);boolean known=m instanceof Number,muted=known&&control.isMuted(((Number)m).intValue());Long wait=pendingMute.get(control.mutePath);boolean pending=wait!=null&&SystemClock.elapsedRealtime()-wait<800;
-                mute.setEnabled(ready&&known&&!pending);mute.setAlpha(ready&&known?1f:.4f);String state=pending?"…":known?s(muted?"muted":"mute"):"—";Ui.updateText(mute,withFader?state:profile.label(OverlayService.this,control)+"\n"+state);mute.setTextColor(Ui.TEXT);
+                mute.setEnabled(ready&&known&&!pending);mute.setAlpha(ready&&known?1f:.4f);String state=pending?"…":known?s(muted?"muted":"mute"):"—";String label=profile.label(OverlayService.this,control);if(!withFader&&mute.getWidth()>0)label=TextUtils.ellipsize(label,mute.getPaint(),Math.max(1,mute.getWidth()-mute.getPaddingLeft()-mute.getPaddingRight()),TextUtils.TruncateAt.END).toString();Ui.updateText(mute,withFader?state:label+"\n"+state);mute.setTextColor(Ui.TEXT);
                 if(lastMuted==null||lastMuted!=muted){lastMuted=muted;mute.setBackground(Ui.bg(muted?Ui.RED:Ui.LINE,Ui.dp(OverlayService.this,3)));}
             }
         }
@@ -254,5 +290,5 @@ public final class OverlayService extends Service implements MixerClient.Listene
     }
     public void onConfigurationChanged(android.content.res.Configuration config){super.onConfigurationChanged(config);if(window!=null)show(expanded);}
     public IBinder onBind(Intent intent){return null;}
-    public void onDestroy(){destroyed=true;live=null;handler.removeCallbacksAndMessages(null);if(returnDialog!=null)returnDialog.dismiss();releaseWifi();try{cm.unregisterNetworkCallback(watcher);}catch(Exception ignored){}try{if(identityWatcher!=null)cm.unregisterNetworkCallback(identityWatcher);}catch(Exception ignored){}mixer.close();if(window!=null)wm.removeView(window);stopForeground(STOP_FOREGROUND_REMOVE);super.onDestroy();}
+    public void onDestroy(){hideDismissTarget();destroyed=true;live=null;handler.removeCallbacksAndMessages(null);if(returnDialog!=null)returnDialog.dismiss();releaseWifi();try{cm.unregisterNetworkCallback(watcher);}catch(Exception ignored){}try{if(identityWatcher!=null)cm.unregisterNetworkCallback(identityWatcher);}catch(Exception ignored){}mixer.close();if(window!=null)wm.removeView(window);stopForeground(STOP_FOREGROUND_REMOVE);super.onDestroy();}
 }

@@ -88,6 +88,11 @@
     <string name="size_small">Mały</string>
     <string name="size_medium">Średni</string>
     <string name="size_large">Duży</string>
+    <string name="size_xlarge">Bardzo duży (XL)</string>
+    <string name="size_xxlarge">Jeszcze większy (2XL)</string>
+    <string name="size_huge">Ogromny (3XL)</string>
+    <string name="size_maximum">Maksymalny (4XL)</string>
+    <string name="large_controls_hint">Przy bardzo dużych elementach sterujących przesuwaj panel poziomo między nimi, a pionowo po nazwie lub przycisku.</string>
     <string name="appearance">Wygląd</string>
     <string name="automatic_connection">Połącz przy otwarciu</string>
     <string name="automatic_connection_hint">Po otwarciu panelu aplikacja spróbuje połączyć się z siecią Wi-Fi miksera i wczytać aktualne wartości sterowania.</string>

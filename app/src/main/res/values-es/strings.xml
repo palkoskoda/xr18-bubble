@@ -88,6 +88,11 @@
     <string name="size_small">Pequeño</string>
     <string name="size_medium">Mediano</string>
     <string name="size_large">Grande</string>
+    <string name="size_xlarge">Extragrande (XL)</string>
+    <string name="size_xxlarge">Muy grande (2XL)</string>
+    <string name="size_huge">Enorme (3XL)</string>
+    <string name="size_maximum">Máximo (4XL)</string>
+    <string name="large_controls_hint">Con controles muy grandes, desliza horizontalmente entre ellos y verticalmente sobre un título o botón para desplazar el panel.</string>
     <string name="appearance">Apariencia</string>
     <string name="automatic_connection">Conectar al abrir</string>
     <string name="automatic_connection_hint">Al abrir el panel, la aplicación intenta conectarse a la red Wi-Fi de la mesa y cargar los valores actuales de los controles.</string>

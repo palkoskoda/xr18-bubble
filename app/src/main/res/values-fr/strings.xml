@@ -88,6 +88,11 @@
     <string name="size_small">Petite</string>
     <string name="size_medium">Moyenne</string>
     <string name="size_large">Grande</string>
+    <string name="size_xlarge">Très grande (XL)</string>
+    <string name="size_xxlarge">Encore plus grande (2XL)</string>
+    <string name="size_huge">Énorme (3XL)</string>
+    <string name="size_maximum">Maximale (4XL)</string>
+    <string name="large_controls_hint">Pour les très grandes commandes, balayez horizontalement pour passer de l’une à l’autre et verticalement depuis un titre ou un bouton pour faire défiler.</string>
     <string name="appearance">Apparence</string>
     <string name="automatic_connection">Se connecter à l’ouverture</string>
     <string name="automatic_connection_hint">À l’ouverture du panneau, demander la connexion au Wi-Fi de la console et charger les valeurs actuelles des commandes.</string>

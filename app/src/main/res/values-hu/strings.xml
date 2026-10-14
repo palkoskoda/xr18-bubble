@@ -88,6 +88,11 @@
     <string name="size_small">Kicsi</string>
     <string name="size_medium">Közepes</string>
     <string name="size_large">Nagy</string>
+    <string name="size_xlarge">Extra nagy (XL)</string>
+    <string name="size_xxlarge">Nagyon nagy (2XL)</string>
+    <string name="size_huge">Óriási (3XL)</string>
+    <string name="size_maximum">Maximális (4XL)</string>
+    <string name="large_controls_hint">Nagyon nagy vezérlőknél vízszintesen lapozhatsz közöttük. Függőlegesen a címen vagy egy gombon húzva görgethetsz.</string>
     <string name="appearance">Megjelenés</string>
     <string name="automatic_connection">Csatlakozás megnyitáskor</string>
     <string name="automatic_connection_hint">A panel megnyitásakor az alkalmazás csatlakozást kér a keverő Wi-Fi-hálózatához, és betölti a vezérlők aktuális értékeit.</string>

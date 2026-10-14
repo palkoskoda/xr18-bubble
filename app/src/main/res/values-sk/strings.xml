@@ -88,6 +88,11 @@
     <string name="size_small">Malá</string>
     <string name="size_medium">Stredná</string>
     <string name="size_large">Veľká</string>
+    <string name="size_xlarge">Extra veľká (XL)</string>
+    <string name="size_xxlarge">Veľmi veľká (2XL)</string>
+    <string name="size_huge">Obrovská (3XL)</string>
+    <string name="size_maximum">Maximálna (4XL)</string>
+    <string name="large_controls_hint">Pri veľmi veľkých ovládačoch posúvaj panel vodorovne medzi ovládačmi a zvisle cez názov alebo tlačidlo.</string>
     <string name="appearance">Vzhľad</string>
     <string name="automatic_connection">Pripojiť pri otvorení</string>
     <string name="automatic_connection_hint">Pri otvorení panela požiadať o Wi-Fi mixu a načítať aktuálne hodnoty ovládačov.</string>

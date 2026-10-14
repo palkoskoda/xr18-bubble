@@ -88,6 +88,11 @@
     <string name="size_small">Klein</string>
     <string name="size_medium">Mittel</string>
     <string name="size_large">Groß</string>
+    <string name="size_xlarge">Extragroß (XL)</string>
+    <string name="size_xxlarge">Sehr groß (2XL)</string>
+    <string name="size_huge">Riesig (3XL)</string>
+    <string name="size_maximum">Maximal (4XL)</string>
+    <string name="large_controls_hint">Bei sehr großen Bedienelementen horizontal zwischen ihnen wischen. Zum vertikalen Scrollen über einen Titel oder eine Schaltfläche wischen.</string>
     <string name="appearance">Darstellung</string>
     <string name="automatic_connection">Beim Öffnen verbinden</string>
     <string name="automatic_connection_hint">Beim Öffnen des Panels die Verbindung zum Mischpult-WLAN anfordern und aktuelle Werte laden.</string>

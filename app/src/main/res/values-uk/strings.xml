@@ -88,6 +88,11 @@
     <string name="size_small">Малий</string>
     <string name="size_medium">Середній</string>
     <string name="size_large">Великий</string>
+    <string name="size_xlarge">Дуже великий (XL)</string>
+    <string name="size_xxlarge">Ще більший (2XL)</string>
+    <string name="size_huge">Величезний (3XL)</string>
+    <string name="size_maximum">Максимальний (4XL)</string>
+    <string name="large_controls_hint">Для дуже великих елементів керування гортайте панель горизонтально між ними, а вертикально — проводячи по назві або кнопці.</string>
     <string name="appearance">Вигляд</string>
     <string name="automatic_connection">Підключатися під час відкриття</string>
     <string name="automatic_connection_hint">Коли ви відкриваєте панель, програма запитує підключення до Wi-Fi мікшера та завантажує поточні значення елементів керування.</string>

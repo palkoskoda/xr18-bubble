@@ -88,6 +88,11 @@
     <string name="size_small">Piccola</string>
     <string name="size_medium">Media</string>
     <string name="size_large">Grande</string>
+    <string name="size_xlarge">Extra grande (XL)</string>
+    <string name="size_xxlarge">Molto grande (2XL)</string>
+    <string name="size_huge">Enorme (3XL)</string>
+    <string name="size_maximum">Massima (4XL)</string>
+    <string name="large_controls_hint">Con comandi molto grandi, scorri in orizzontale tra i comandi e in verticale partendo da un titolo o un pulsante.</string>
     <string name="appearance">Aspetto</string>
     <string name="automatic_connection">Connetti all\'apertura</string>
     <string name="automatic_connection_hint">Quando apri il pannello, l’app richiede la connessione al Wi-Fi del mixer e carica i valori correnti dei controlli.</string>

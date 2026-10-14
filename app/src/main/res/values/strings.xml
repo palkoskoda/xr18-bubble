@@ -88,6 +88,11 @@
     <string name="size_small">Small</string>
     <string name="size_medium">Medium</string>
     <string name="size_large">Large</string>
+    <string name="size_xlarge">Extra large (XL)</string>
+    <string name="size_xxlarge">Very large (2XL)</string>
+    <string name="size_huge">Huge (3XL)</string>
+    <string name="size_maximum">Maximum (4XL)</string>
+    <string name="large_controls_hint">For very large controls, swipe horizontally between controls and scroll vertically from a title or button.</string>
     <string name="appearance">Appearance</string>
     <string name="automatic_connection">Connect on open</string>
     <string name="automatic_connection_hint">When you open the panel, request mixer Wi-Fi and load the current control values.</string>

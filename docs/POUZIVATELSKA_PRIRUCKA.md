@@ -1,6 +1,6 @@
 # XR18 Bubble — používateľská príručka
 
-Vyvinul Pavol Škoda · podpora: pavolskoda@azet.sk · verzia 0.4.0
+Vyvinul Pavol Škoda · podpora: pavolskoda@azet.sk · verzia 0.4.1
 
 ## Na čo aplikácia slúži
 
@@ -35,7 +35,13 @@ Aplikácia si pamätá názov predchádzajúcej siete, nie jej heslo. Ak sa pri 
 
 Farebné stĺpce pri faderoch zobrazujú skutočnú úroveň signálu a krátko držanú špičku. Master má L/R merač; kanály, zbernice a DCA jeden stĺpec. Merače kanálov a zberníc sú pred faderom, master za faderom. Mute skupina nemá vlastný merač. Pri tichom signále môže byť stĺpec prázdny; po výpadku dát merač zmizne.
 
-Panel sa prispôsobuje počtu aj druhu ovládačov. Samotná mute skupina má nízky panel, kanál s hlasitosťou vyšší fader. Tri veľkosti ovládačov a bublinky sa volia v nastaveniach. Viac faderov sa posúva vodorovne.
+Panel sa prispôsobuje počtu aj druhu ovládačov. Samotná mute skupina má nízky panel, kanál s hlasitosťou vyšší fader. V karte **Ovládače** si vyber jednu zo siedmich veľkostí: Malá, Stredná, Veľká, Extra veľká (XL), Veľmi veľká (2XL), Obrovská (3XL) alebo Maximálna (4XL). Zväčšuje sa aj písmo, úchyt fadera, merače a tlačidlá mute. Samotná bublinka má naďalej tri veľkosti.
+
+Viac ovládačov posúvaš vodorovne. Ak sa veľké ovládače nezmestia na výšku, posúvaj panel zvisle potiahnutím po názve alebo tlačidle. Potiahnutie priamo po faderi mení hlasitosť.
+
+## Vypnutie bublinky
+
+Začni presúvať zbalenú bublinku. Dole na obrazovke sa zobrazí terč s krížikom **×**. Presuň bublinku nad terč; keď sa zvýrazní, pustením bublinky vypneš plávajúci ovládač. Pustenie mimo terča ponechá bublinku zapnutú a prichytí ju ku kraju obrazovky. Znova ju zapneš v aplikácii tlačidlom **Zobraziť bublinku**.
 
 ## Skratka na Mixing Station alebo inú aplikáciu
 

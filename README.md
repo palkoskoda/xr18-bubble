@@ -22,10 +22,10 @@ Android 10 or newer is required. The app is designed for Behringer XR18/X18 and 
 
 ## Features
 
-- Floating bubble above other apps; drag it to either screen edge.
+- Floating bubble above other apps; drag it to either screen edge or onto the bottom **×** target to stop it.
 - Choose from master, four DCAs, four mute groups, six buses and sixteen channels.
 - Add or remove controls with checkboxes; choose volume, mute or both where available.
-- Adaptive panel layout, three control sizes, three bubble sizes and custom labels.
+- Adaptive panel layout, seven control sizes from Small through Maximum (4XL), three bubble sizes and custom labels. Larger controls also enlarge labels, fader handles, signal meters and mute buttons. Scroll between controls and vertically when the panel cannot fit on screen.
 - Live signal meters with peak hold, including stereo master levels.
 - Remember the mixer Wi-Fi after a verified mixer response and request it when opening the panel.
 - Return-to-Wi-Fi button and close prompt after an opening that changed the network. Staying at the mixer does not cause repeated prompts on subsequent openings on the same network.
@@ -41,6 +41,10 @@ Android 10 or newer is required. The app is designed for Behringer XR18/X18 and 
 4. Choose **Show bubble** and allow display over other apps. Enable notifications for the running service when requested.
 5. Open the bubble. Controls become active only after the mixer is verified and all selected values are synchronized.
 
+To make the controls easier to see and touch, choose a larger **Control size** on the Controls screen: Small, Medium, Large, Extra large (XL), Very large (2XL), Huge (3XL), or Maximum (4XL). At the largest sizes, swipe horizontally between controls and scroll vertically from a title or button. Dragging directly on a fader changes its level.
+
+To stop the floating controller, drag the collapsed bubble onto the **×** target that appears at the bottom of the screen and release it. Releasing elsewhere keeps the bubble running and snaps it to the nearest edge. You can show it again from the app.
+
 Android may require confirmation when requesting Wi-Fi. A completely silent switch is not guaranteed. A local secondary connection for this app may leave other apps, including Mixing Station, on a different default network. Returning releases the app's request; Android decides which available saved network to restore.
 
 ## Screenshots
@@ -54,6 +58,7 @@ The screenshots use a local **XR18 Demo** simulator. They demonstrate the interf
 - [Website — English / Slovenčina](https://palkoskoda.github.io/xr18-bubble/)
 - [Slovak user guide](docs/POUZIVATELSKA_PRIRUCKA.md)
 - [Testing and coverage](TESTING.md)
+- [Release notes](docs/RELEASE_NOTES.md)
 - [Privacy policy](https://palkoskoda.github.io/xr18-bubble/privacy.html)
 - [Build and release guide](BUILDING.md)
 - [Report an issue](https://github.com/palkoskoda/xr18-bubble/issues)

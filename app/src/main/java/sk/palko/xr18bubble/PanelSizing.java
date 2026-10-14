@@ -2,12 +2,57 @@ package sk.palko.xr18bubble;
 
 /** Device-independent panel measurements, in dp. No Android dependencies. */
 public final class PanelSizing {
+    private static final float[] CONTROL_SCALES = { 1f, 1.15f, 1.35f, 1.8f, 2.4f, 3.3f, 4.5f };
+    private static final int[] STRIP_WIDTHS = { 64, 76, 92, 120, 160, 224, 320 };
+    private static final int[] FADER_HEIGHTS = { 180, 210, 250, 330, 420, 540, 720 };
+    private static final int[] MUTE_HEIGHTS = { 48, 48, 48, 80, 108, 148, 208 };
+    private static final int[] HEADER_HEIGHTS = { 24, 24, 24, 44, 48, 52, 56 };
+    private static final int[] STATUS_HEIGHTS = { 12, 12, 12, 22, 26, 30, 34 };
+    private static final int[] RETURN_HEIGHTS = { 34, 34, 34, 54, 62, 70, 78 };
     private PanelSizing() {}
 
+    /** Stable preference values, returned defensively so callers cannot alter their order. */
+    public static String[] controlSizes() {
+        return new String[] { "small", "medium", "large", "xlarge", "xxlarge", "huge", "maximum" };
+    }
+
+    private static int controlIndex(String size) {
+        if ("small".equals(size)) return 0;
+        if ("large".equals(size)) return 2;
+        if ("xlarge".equals(size)) return 3;
+        if ("xxlarge".equals(size)) return 4;
+        if ("huge".equals(size)) return 5;
+        if ("maximum".equals(size)) return 6;
+        return 1;
+    }
+
+    public static float controlScale(String size) {
+        return CONTROL_SCALES[controlIndex(size)];
+    }
+
     public static int stripWidth(String size) {
-        if ("small".equals(size)) return 64;
-        if ("large".equals(size)) return 92;
-        return 76;
+        return STRIP_WIDTHS[controlIndex(size)];
+    }
+
+    public static int faderHeightDp(String size) {
+        return FADER_HEIGHTS[controlIndex(size)];
+    }
+
+    public static int muteHeightDp(String size) {
+        return MUTE_HEIGHTS[controlIndex(size)];
+    }
+
+    public static int headerHeightDp(String size) {
+        return HEADER_HEIGHTS[controlIndex(size)];
+    }
+
+    public static int statusHeightDp(String size) {
+        return STATUS_HEIGHTS[controlIndex(size)];
+    }
+
+    /** Includes the gap above the optional return-to-Wi-Fi action. */
+    public static int returnHeightDp(String size) {
+        return RETURN_HEIGHTS[controlIndex(size)];
     }
 
     public static int bubbleDiameter(String size) {
@@ -25,12 +70,12 @@ public final class PanelSizing {
 
     /** Includes a single mute-button row; the caller handles further wrapped rows. */
     public static int panelHeightDp(int faderCount, int buttonCount, String size, int availableHeightDp) {
-        long desired = 36 + 16;
+        long desired = 16L + headerHeightDp(size) + statusHeightDp(size);
         if (faderCount <= 0 && buttonCount <= 0) {
             desired += 80;
         } else {
-            if (faderCount > 0) desired += "small".equals(size) ? 180 : "large".equals(size) ? 250 : 210;
-            if (buttonCount > 0) desired += 48 + 6;
+            if (faderCount > 0) desired += faderHeightDp(size);
+            if (buttonCount > 0) desired += muteHeightDp(size) + 6;
         }
         return fit(desired, availableHeightDp);
     }
