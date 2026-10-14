@@ -11,6 +11,10 @@
 - Native UI checks: system/light/dark themes, language selection, shortcut search/selection/launch/persistence, and all twelve locale renderings. All twelve resource sets retain 151 matching keys and placeholders. Final French/Hungarian/Polish/Spanish terminology corrections were rebuilt and visually checked.
 - Seven native 1080 x 1920 EN/SK screenshots were visually verified. The demo meter screenshot used a local simulator and sent zero SET commands.
 
+## Public release APK
+
+The publisher-signed, non-debuggable 0.4.0 APK was installed cleanly and cold-started on the dedicated Android emulator. Version code 5, target API 36, disabled debugging, mixer/settings screens, author credit and contact were verified. No app crash was observed. This installation check did not connect to a mixer or change Wi-Fi, faders or mute.
+
 ## Physical hardware checked
 
 On a connected Android 16 phone with an XR18, a verified mixer response saved the network identity; a network request connected to the mixer, loaded master state and received stereo meter packets. Releasing the request allowed Android to return to the previous saved Wi-Fi. This check did not change a physical fader or mute.

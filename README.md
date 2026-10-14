@@ -53,7 +53,7 @@ The screenshots use a local **XR18 Demo** simulator. They demonstrate the interf
 
 - [Slovak user guide](docs/POUZIVATELSKA_PRIRUCKA.md)
 - [Testing and coverage](TESTING.md)
-- [Privacy policy](site/privacy.html)
+- [Privacy policy](https://palkoskoda.github.io/xr18-bubble/privacy.html)
 - [Build and release guide](BUILDING.md)
 - [Report an issue](https://github.com/palkoskoda/xr18-bubble/issues)
 - Support: [pavolskoda@azet.sk](mailto:pavolskoda@azet.sk)
