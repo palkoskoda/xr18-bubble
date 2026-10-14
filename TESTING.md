@@ -1,5 +1,18 @@
 # Testing XR18 Bubble
 
+## 0.4.2 completed verification
+
+- Pure Java: 1,209 OSC/protocol, 6,516 panel/font preference checks and 5,131 meter decoding checks passed. The local fake-mixer self-test passed.
+- Android overlay regression: 4,998 checks passed across 432 × 960 with system font scale 1.0, 320 × 640 with font scale 1.6, and 640 × 320 with font scale 1.6. Each run retains the original 172 size/drag checks and tests 35 combinations of seven control sizes with 75%, 100%, 150%, 200% and 300% text. All eight selectable percentages and safe defaults are checked. Coverage includes persisted/reloaded font preferences, unchanged fader-cap/meter dimensions, complete +10.0 and -30.0 numeric values, reachable scrolling and fixed actions, and disabled mixer commands in the in-process fixture.
+- After the final canvas spacing adjustment, 99 focused checks across the same three display/font configurations verified actual native drawing, a gap between dB labels and the cap, fully visible caps and complete numeric values. These focused checks preserve the earlier full regression logs. Representative original native screenshots were visually reviewed.
+- Final-debug meter/transport smoke passed: verified peer and Wi-Fi learning, partial synchronization guard, live/stale meter rendering, subscription lifecycle and zero unexpected SET commands. Return-Wi-Fi regression passed all 49 checks using simulated network callbacks.
+- Twelve offline language resource sets contain 158 matching keys. English and Slovak Play texts pass the store-length and document-parity checker.
+- The signed non-debuggable APK and validated unsigned AAB are version 0.4.2 / code 7, min API 29 and target API 36. The APK uses the same publisher certificate as the prior public beta. The AAB still requires upload signing and Play Console setup.
+- Publisher-signed 0.4.1 was updated to 0.4.2 in place: Slovak, Dark theme and Large controls survived. The new preference defaults to 100%; selecting 150% preserved the control-size choice and survived a cold start. All eight percentage choices were inspected in the native dialog. Final EN/SK dialog screenshots were captured and reviewed, including readable percentage formatting.
+- The English/Slovak website and privacy pages passed twelve responsive checks, including images, local links and language switching.
+
+No physical phone, mixer or Wi-Fi association was used in these new automated checks. The existing hardware observations below remain the limit of real-device coverage.
+
 ## 0.4.1 completed verification
 
 - Pure Java: 1,209 OSC/protocol, 6,492 panel sizing and 5,131 meter decoding checks passed; local fake-mixer self-test passed.

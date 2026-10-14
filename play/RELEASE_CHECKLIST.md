@@ -1,19 +1,19 @@
 # XR18 Bubble Google Play release checklist
 
-Google Play is now a planned distribution channel. Version 0.4.1 (version code 6) has a validated, non-debuggable unsigned App Bundle and a publisher-signed public APK. The Play upload bundle is not signed or submitted, and Play Console account setup and approval are still pending.
+Google Play is now a planned distribution channel. These drafts target version 0.4.2 (version code 7), which adds independent text size. The current 0.4.2 non-debuggable unsigned App Bundle was rebuilt and validated with bundletool 1.18.3; the public APK is publisher-signed. The Play upload bundle is not signed or submitted, and Play Console account setup and approval are still pending.
 
-Current distribution is the public beta on [GitHub Releases](https://github.com/palkoskoda/xr18-bubble/releases/tag/v0.4.1-beta). This checklist tracks preparation for the first Google Play submission.
+Current distribution is the public beta on [GitHub Releases](https://github.com/palkoskoda/xr18-bubble/releases/tag/v0.4.2-beta). This checklist tracks preparation for the first Google Play submission.
 
 ## Completed in repository
 
-- [x] English and Slovak store descriptions highlight seven sizes up to Maximum (4XL), people who find small controls hard to read or touch, and using a tablet/other controller for the full mix while keeping chosen controls on the phone. Ready-to-paste UTF-8 title, short/full description and release notes are in `play/listings/`; `python tools/check_play_listings.py` checks limits and document parity.
+- [x] English and Slovak store descriptions highlight seven sizes up to Maximum (4XL), independent text size from 75% to 300%, people who find small controls hard to read or touch, and using a tablet/other controller for the full mix while keeping chosen controls on the phone. Ready-to-paste UTF-8 title, short/full description and release notes are in `play/listings/`; `python tools/check_play_listings.py` checks limits and document parity.
 - [x] Privacy-policy draft with local-only storage, Keystore-protected password, unencrypted local mixer UDP, and no developer collection claims.
 - [x] Permission and foreground-service rationale mapped to the current manifest.
 - [x] Official Google Play/Android references recorded below.
 - [x] Native build script supports separate debug APK and unsigned release AAB paths using SDK 36 and pinned bundletool 1.18.3.
 - [x] Original 512×512 icon, SVG source, and 1024×500 feature graphic generated in `play/assets/` with the reproducible Pillow script.
 - [x] Release bundle config disables LANGUAGE splits so all twelve offline in-app translations ship together; density/ABI split behavior remains available to downstream delivery.
-- [x] Source and built artifacts target/compile Android 16 (API 36), version 0.4.1 / code 6; release manifest is non-debuggable. The current unsigned AAB was rebuilt and validated with bundletool 1.18.3 on 14 October 2026.
+- [x] The current 0.4.2 / code 7 unsigned AAB targets/compiles Android 16 (API 36), is non-debuggable and was validated with bundletool 1.18.3 on 14 October 2026. All twelve offline languages remain packaged together.
 - [x] User-facing strings in English, Slovak, Czech, German, Polish, Hungarian, French, Spanish, Italian, Portuguese, Dutch and Ukrainian; explicit overlay opt-in, system light/dark theme and language/size settings implemented.
 - [x] Optional shortcut can launch a user-selected installed mixer app (including Mixing Station) without requesting `QUERY_ALL_PACKAGES`.
 - [x] Product credit prepared as “Developed by Pavol Škoda”; the Play developer account's legal identity still needs verification before submission.
@@ -22,6 +22,7 @@ Current distribution is the public beta on [GitHub Releases](https://github.com/
 - [x] Shortcut search, selection, launch, and persistence passed native ADB checks; the shortcut is configurable from the refresh area.
 - [x] Version 0.4.1 smoke coverage passed for live meters, stale data handling, reconnect behavior and zero unexpected SET commands; return-Wi-Fi passed 49 checks. Large-control and drag-to-stop instrumentation passed 516 checks across normal, narrow and landscape layouts, including system font scale 1.6. See `TESTING.md` for scope and physical-hardware limits.
 
+- [x] Current EN/SK text-size dialog screenshots (432×960) captured and visually verified, including all eight readable percentages.
 - [x] Seven existing native 1080×1920 EN/SK screenshots are captured and visually verified, including a floating panel with simulated live meters and zero SET commands. Current large-control/drag screenshots were saved for test QA; additional store-ready captures are still listed below.
 
 ## Required before a publisher can submit
@@ -30,12 +31,13 @@ Current distribution is the public beta on [GitHub Releases](https://github.com/
 - [ ] Create the Play Console app and reserve/confirm package `sk.palko.xr18bubble`.
 - [ ] At Play App Signing enrollment, provide the existing publisher app-signing key if GitHub and Play APKs should update the same installation. Follow Play Console's current encrypted-key import flow; do not accept a different Google-generated distribution key for that continuity plan. Compare the Play app-signing certificate against the public certificate SHA-256 `5b60b0171fefe5bb1e619bfbbe5f3f8ffc74d00a3adc2401cfc64e8e5a7220af`. This is a public fingerprint, not a private key.
 - [ ] Finish hardware/OS coverage beyond the verified Android 15 emulator and connected Android 16 phone.
+- [x] Current 0.4.2 AAB rebuilt and validated; manifest/version/debugging inspected. New text-size verification is recorded in `TESTING.md`: 4,998 overlay checks plus 99 focused native drawing checks.
 - [ ] Produce a non-debuggable signed `.aab` with a unique version code and release version name.
 - [ ] Generate/protect and register a separate upload key for signing the AAB. Distinguish the upload certificate from the app-signing certificate used on APKs delivered to users. Existing publisher credentials remain private outside this repository; no key was generated or exported in this preparation.
 - [ ] Complete App content declarations: Data safety, privacy policy, ads (none), target audience/content rating, and special-use foreground-service declaration.
 - [ ] Complete the overlay permission and notification disclosures in the app and verify the user-started service behavior.
 - [ ] Upload `play/assets/xr18-bubble-icon-512.png`, `play/assets/xr18-bubble-feature-1024x500.png`, and the prepared en-US/sk-SK phone screenshots. The seven native 1080×1920 screenshots passed visual verification; the XR18 Demo panel uses a local simulator. Confirm all assets are original or licensed and contain no third-party marks.
-- [ ] Add current EN/SK store screenshots of a large mute-only panel, a large fader with mute, the seven size choices and drag-to-stop. Follow the screenshot brief in `STORE_LISTING.md`; do not claim the test QA screenshots establish tablet hardware coverage.
+- [ ] Add current EN/SK store screenshots of a large mute-only panel, a large fader with mute, the seven control sizes, independent text-size choices and drag-to-stop. Follow the screenshot brief in `STORE_LISTING.md`; do not claim the test QA screenshots establish tablet hardware coverage.
 - [ ] Test the saved-profile flow on the actual target phone: current Wi‑Fi → preferred mixer Wi‑Fi → selected mixer → state sync → fader/mute change. Record any Android/OEM confirmation step.
 - [ ] Test with a real XR18 on the intended firmware and network. Transport and UI tests use a simulator. A connection, master state and stereo meters were also checked on the connected Android 16 phone with the user’s XR18; wider hardware/firmware coverage is still required.
 - [ ] Run internal testing, then closed testing if required by the account.
@@ -45,7 +47,7 @@ Current distribution is the public beta on [GitHub Releases](https://github.com/
 
 ## Local build commands
 
-The current source manifest carries version `0.4.1`, code `6`, target/compile API 36 and `android:debuggable="false"`. Confirm the next unused code in Play Console before a real upload. A subsequent update for existing public code-6 installations should use a higher code. The script changes only the generated debug manifest copy to `android:debuggable="true"`.
+The current source manifest carries version `0.4.2`, code `7`, target/compile API 36 and `android:debuggable="false"`. Confirm that code 7 is unused in Play Console before a real upload. It is higher than the previous public code 6. Later updates must also increase the code. The script changes only the generated debug manifest copy to `android:debuggable="true"`.
 
 ```powershell
 .\build.ps1 -Mode debug -SdkRoot 'C:\Android\sdk'

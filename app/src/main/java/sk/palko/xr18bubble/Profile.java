@@ -41,6 +41,7 @@ final class Profile {
     void parts(XAirProtocol.Control c,boolean volume,boolean mute){put("volume_"+c.id,volume?"on":"off");put("mute_"+c.id,mute?"on":"off");}
     Set<String> requiredPaths(){Set<String> out=new HashSet<>();for(XAirProtocol.Control c:selected()){if(volume(c))out.add(c.faderPath);if(mute(c))out.add(c.mutePath);}return out;}
     String controlSize(){String s=get("control_size");return s.isEmpty()?"small":s;}
+    String fontSize(){String s=get("font_size");return s.isEmpty()?"100":s;}
     String bubbleSize(){String s=get("bubble_size");return s.isEmpty()?"medium":s;}
     String label(Context context,XAirProtocol.Control c) {
         String v=get("label_"+c.id);if(!v.isEmpty())return v;

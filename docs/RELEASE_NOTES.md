@@ -1,5 +1,13 @@
 # Release notes
 
+## 0.4.2-beta
+
+- Set Text size independently from Control size on the Controls screen: 75%, 100% (default), 125%, 150%, 175%, 200%, 250% or 300%.
+- The percentage scales the selected control size's labels, numeric values, mute text, connection status and fader dB markings. Android's system text scale also applies. Fader handles and signal meters keep their chosen control size.
+- The panel adapts its width and height to the text and scrolls when needed. Text fitted to a limited screen may be smaller than the requested maximum.
+
+This beta uses Android version name 0.4.2 and version code 7. See [Testing](../TESTING.md) for verification results and device coverage.
+
 ## 0.4.1-beta
 
 - Seven control sizes: Small, Medium, Large, Extra large (XL), Very large (2XL), Huge (3XL) and Maximum (4XL).

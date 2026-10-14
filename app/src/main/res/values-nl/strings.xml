@@ -156,4 +156,6 @@
     <string name="developed_by">Ontwikkeld door %1$s</string>
     <string name="version">Versie</string>
     <string name="support">Ondersteuning</string>
+    <string name="font_size">Tekstgrootte</string>
+    <string name="font_size_hint">De tekstgrootte is afhankelijk van de gekozen grootte van de regelaars en volgt ook de tekstinstellingen van Android. Het paneel past zich aan grotere labels en waarden aan.</string>
 </resources>

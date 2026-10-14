@@ -156,5 +156,7 @@
     <string name="developed_by">Vyvinul %1$s</string>
     <string name="version">Verzia</string>
     <string name="support">Podpora</string>
+    <string name="font_size">Veľkosť písma</string>
+    <string name="font_size_hint">Veľkosť písma sa odvíja od zvolenej veľkosti ovládačov a rešpektuje aj nastavenie písma v Androide. Panel sa prispôsobí väčším názvom a hodnotám.</string>
 </resources>
 

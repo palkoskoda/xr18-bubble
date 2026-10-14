@@ -1,1 +1,1 @@
-Seven control sizes up to Maximum (4XL), with larger text, fader handles, signal meters and mute buttons. Keep only the controls you use often. The panel scrolls when needed. Drag the bubble onto the bottom cross to stop it.
+New independent Text size setting: 75% to 300% of your selected control size's text, with Android system text scaling too. Enlarge labels, values, mute text, connection status and fader dB markings while keeping fader handles and meters at your chosen control size. The panel adapts and scrolls when needed.

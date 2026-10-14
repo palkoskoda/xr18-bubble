@@ -11,7 +11,7 @@ import java.util.Locale;
 final class FaderView extends View {
     interface Listener { void changed(float value); }
     private final Paint p=new Paint(Paint.ANTI_ALIAS_FLAG);
-    private float value=.0f,startY,startValue,controlScale=1f;
+    private float value=.0f,startY,startValue,controlScale=1f,textScale=1f;
     private boolean known,dragging;
     private Listener listener;
     private float[] meterDb;
@@ -20,8 +20,9 @@ final class FaderView extends View {
     private long meterTime;
     FaderView(Context c,Listener l) { super(c);listener=l;setContentDescription(L.s(c,"volume"));setFocusable(true); }
     void setControlScale(float scale){controlScale=Math.max(1f,scale);invalidate();}
+    void setTextScale(float scale){textScale=Math.max(.75f,Math.min(3f,scale));invalidate();}
     private float dp(float n){return Ui.dp(getContext(),n*controlScale);}
-    private float sp(float n){return android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_SP,n*controlScale,getResources().getDisplayMetrics());}
+    private float sp(float n){return android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_SP,n*controlScale*textScale,getResources().getDisplayMetrics());}
     void update(Float v,boolean enabled) {
         known=v!=null;
         if((!enabled||!known)&&dragging){dragging=false;if(getParent()!=null)getParent().requestDisallowInterceptTouchEvent(false);}
@@ -39,7 +40,7 @@ final class FaderView extends View {
         super.onDraw(c);float x=getWidth()*.56f,t=top(),h=span();
         drawMeter(c,t,h);
         p.setStrokeWidth(dp(4));p.setColor(0xff080808);c.drawLine(x,t,x,t+h,p);
-        p.setTextSize(sp(8));p.setTypeface(Typeface.MONOSPACE);
+        p.setTextSize(sp(8));p.setTypeface(Typeface.MONOSPACE);float labelWidth=Math.max(1,x-dp(12)-dp(3));float desiredWidth=p.measureText("-60");if(desiredWidth>labelWidth)p.setTextSize(p.getTextSize()*labelWidth/desiredWidth);
         float lastLabel=-Float.MAX_VALUE;Paint.FontMetrics fm=p.getFontMetrics();float baseline=-(fm.ascent+fm.descent)/2;float labelGap=Math.max(dp(9),p.getFontSpacing()+dp(1));
         for(int db:new int[]{10,0,-10,-20,-30,-40,-60}) {
             float y=t+(1-XAirProtocol.dbToNormalized(db))*h;

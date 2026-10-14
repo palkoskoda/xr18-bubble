@@ -16,6 +16,15 @@ public final class PanelSizing {
         return new String[] { "small", "medium", "large", "xlarge", "xxlarge", "huge", "maximum" };
     }
 
+    /** Independent text multiplier; unknown or missing preferences retain existing sizes. */
+    public static String[] fontSizes(){return new String[]{"75","100","125","150","175","200","250","300"};}
+    public static float fontScale(String size){
+        if("75".equals(size))return .75f;if("125".equals(size))return 1.25f;
+        if("150".equals(size))return 1.5f;if("175".equals(size))return 1.75f;
+        if("200".equals(size))return 2f;if("250".equals(size))return 2.5f;
+        if("300".equals(size))return 3f;return 1f;
+    }
+
     private static int controlIndex(String size) {
         if ("small".equals(size)) return 0;
         if ("large".equals(size)) return 2;

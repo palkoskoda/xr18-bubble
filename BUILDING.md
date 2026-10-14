@@ -98,7 +98,7 @@ java -cp build/tests MeterProtocolTest
 python tools/fake_mixer.py --self-test
 ```
 
-The expected Java results are **1,209 protocol checks**, **6,492 panel sizing
+The expected Java results are **1,209 protocol checks**, **6,516 panel sizing
 checks**, and **5,131 meter protocol checks**. The simulator self-test exercises
 local UDP handshake, control messages, and meter encoding; it does not connect
 to a real mixer.
@@ -129,10 +129,13 @@ The meter/transport smoke test starts a local fake mixer and checks connection,
 state synchronization, meter freshness, subscription lifecycle, and unexpected
 control writes. The Wi-Fi return instrumentation runs 49 checks of dialog,
 button, and lifecycle behavior using simulated network callbacks. The large-control
-instrumentation checks sizing, scrolling and drag-to-stop without a mixer, in
+instrumentation checks sizing, independent text preferences, complete numeric
+values, scrolling and drag-to-stop without a mixer, in
 three configurations: normal, 320 × 640 with system text scale 1.6, and 640 × 320
 with text scale 1.6. It restores the previous screen-size override and system
 text scale in its cleanup and removes its separate instrumentation package.
-These tests
-do not establish real radio switching or compatibility with every mixer firmware.
+The default run includes 35 combinations of control size and text size per
+configuration. Add `--drawing-only` for a focused check of native dB-label/cap
+spacing; it keeps the full regression result files intact.
+These tests do not establish real radio switching or compatibility with every mixer firmware.
 Physical Wi-Fi and mixer behavior still needs testing on the intended hardware.

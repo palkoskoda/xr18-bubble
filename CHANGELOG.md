@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2 — independent text size
+
+- Separate Text size on the Controls screen: 75%, 100% (default), 125%, 150%, 175%, 200%, 250% or 300% of the selected control size's text.
+- Scales labels, numeric values, mute text, connection status and fader dB markings, while fader handles and meters retain the selected control size. Android system text scaling also applies.
+- Panel width and height adapt to larger text, with scrolling when needed; screen-fitted text may be smaller than the requested maximum.
+
 ## 0.4.1 — larger controls and drag to stop
 
 - Seven control sizes, from Small through Maximum (4XL), with larger text, fader handles, meters and mute buttons.

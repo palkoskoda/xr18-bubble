@@ -6,6 +6,8 @@ VEĽKÉ OVLÁDAČE, KEĎ SA DROBNÉ ŤAŽKO ČÍTAJÚ
 
 Vyberte si zo siedmich veľkostí, od Malej až po Maximálnu (4XL). Spolu s ovládačmi sa zväčšujú názvy, číselné hodnoty, úchyty faderov, merače signálu aj tlačidlá mute. Väčšie prvky môžu pomôcť ľuďom so slabším zrakom aj každému, komu sa drobné ovládače na telefóne ťažko čítajú alebo triafajú.
 
+Veľkosť písma nastavte nezávisle od veľkosti ovládačov: 75 %, 100 % (predvolené), 125 %, 150 %, 175 %, 200 %, 250 % alebo 300 %. Menia sa názvy, hodnoty, text mute, stav a dB stupnica fadera; uplatňuje sa aj systémová veľkosť textu v Androide. Úchyty faderov a merače si ponechajú zvolenú veľkosť ovládačov. Panel sa prispôsobí a posúva; na malej obrazovke môže byť text menší než požadovaný.
+
 Mute skupina môže byť jedno veľké tlačidlo. Kanál môže mať fader hlasitosti, mute tlačidlo alebo oboje. Zobrazte si iba prvky, ktoré často používate. Medzi ovládačmi posúvajte panel vodorovne; pri najväčších veľkostiach sa dá posúvať aj zvisle.
 
 Telefón aj druhé ovládacie zariadenie sa pripájajú k rovnakému mixu cez lokálnu sieť. Rozloženie panela na telefóne si vyberiete v XR18 Bubble.

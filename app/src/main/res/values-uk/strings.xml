@@ -156,4 +156,6 @@
     <string name="developed_by">Розроблено %1$s</string>
     <string name="version">Версія</string>
     <string name="support">Підтримка</string>
+    <string name="font_size">Розмір тексту</string>
+    <string name="font_size_hint">Розмір тексту залежить від вибраного розміру елементів керування та враховує налаштування тексту Android. Панель пристосовується до більших підписів і значень.</string>
 </resources>

@@ -156,5 +156,7 @@
     <string name="developed_by">Entwickelt von %1$s</string>
     <string name="version">Version</string>
     <string name="support">Support</string>
+    <string name="font_size">Textgröße</string>
+    <string name="font_size_hint">Die Textgröße richtet sich nach der gewählten Größe der Bedienelemente und berücksichtigt auch die Texteinstellungen von Android. Das Panel passt sich an größere Beschriftungen und Werte an.</string>
 </resources>
 

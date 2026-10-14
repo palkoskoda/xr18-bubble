@@ -1,4 +1,4 @@
-"""Test seven overlay sizes and drag-to-dismiss on dedicated emulator-5584.
+"""Test seven overlay sizes, independent fonts and drag-to-dismiss on emulator-5584.
 
 Requires an installed current debug APK; never installs or uninstalls the app.
 Builds its own separate instrumentation APK, restores app preferences and device
@@ -19,7 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "build" / "large-controls-instrumentation"
 TARGET = "sk.palko.xr18bubble"
 TEST = TARGET + ".largecontrolstest"
-SHOTS = ("maximum-mixed-top", "maximum-mixed-bottom", "maximum-mute-only", "dismiss-target-armed")
+SHOTS = ("maximum-mixed-top", "maximum-mixed-bottom", "maximum-mute-only", "dismiss-target-armed",
+         "small-font300-top", "small-font300-bottom", "maximum-font300-top", "maximum-font300-bottom")
 
 
 def command(args: list[str], timeout: int = 120) -> str:
@@ -67,7 +68,7 @@ def build(sdk: Path) -> Path:
     return signed
 
 
-def run(adb: str, serial: str, apk: Path) -> None:
+def run(adb: str, serial: str, apk: Path, drawing_only: bool = False) -> None:
     if serial != "emulator-5584":
         raise ValueError("Only dedicated emulator-5584 is allowed")
 
@@ -88,19 +89,21 @@ def run(adb: str, serial: str, apk: Path) -> None:
     device("install", "-r", str(apk))
     try:
         for name, size, font in configurations:
+            result_name = ("drawing-" if drawing_only else "") + name
             device("shell", f"am force-stop {TARGET}")
             device("shell", "wm", "size", size or restore_size)
             device("shell", "settings", "put", "system", "font_scale", font)
-            output = device("shell", "am", "instrument", "-w", "-r",
-                            TEST + "/.LargeControlsInstrumentation", timeout=180)
-            (OUT / (name + "-result.txt")).write_text(output, encoding="utf-8")
-            print(name + ":\n" + output, flush=True)
-            for shot in SHOTS:
+            instrumentation_args = ["-e", "drawing_only", "true"] if drawing_only else []
+            output = device("shell", "am", "instrument", "-w", "-r", *instrumentation_args,
+                            TEST + "/.LargeControlsInstrumentation", timeout=300)
+            (OUT / (result_name + "-result.txt")).write_text(output, encoding="utf-8")
+            print(result_name + ":\n" + output, flush=True)
+            for shot in (("small-font300-cap", "maximum-font300-cap") if drawing_only else SHOTS):
                 raw = subprocess.run([adb, "-s", serial, "exec-out", "run-as", TARGET,
                                       "cat", "cache/large-controls-" + shot + ".png"],
                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
                 if raw.returncode == 0 and raw.stdout.startswith(b"\x89PNG"):
-                    (OUT / (name + "-" + shot + ".png")).write_bytes(raw.stdout)
+                    (OUT / (result_name + "-" + shot + ".png")).write_bytes(raw.stdout)
             assert "LargeControlsInstrumentation passed:" in output and "INSTRUMENTATION_CODE: -1" in output, "Instrumentation failed; inspect result log"
     finally:
         device("shell", f"am force-stop {TARGET}")
@@ -118,12 +121,13 @@ def main() -> None:
     parser.add_argument("--adb", help="Defaults to platform-tools/adb.exe inside --sdk")
     parser.add_argument("--serial", default="emulator-5584", choices=["emulator-5584"])
     parser.add_argument("--build-only", action="store_true")
+    parser.add_argument("--drawing-only", action="store_true", help="Focused canvas/cap validation; preserve full regression logs")
     args = parser.parse_args()
     if args.sdk is None:
         parser.error("Pass --sdk or set ANDROID_HOME/ANDROID_SDK_ROOT")
     apk = build(args.sdk)
     if not args.build_only:
-        run(args.adb or str(args.sdk / "platform-tools" / "adb.exe"), args.serial, apk)
+        run(args.adb or str(args.sdk / "platform-tools" / "adb.exe"), args.serial, apk, args.drawing_only)
 
 
 if __name__ == "__main__":

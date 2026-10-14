@@ -1,6 +1,6 @@
-# Google Play store listing — 0.4.1
+# Google Play store listing — 0.4.2
 
-Prepared for the planned Google Play release of version 0.4.1 (version code 6). The public beta is on GitHub; Google Play publication and review are still pending.
+Prepared for the planned Google Play release of version 0.4.2 (version code 7). The public beta is on GitHub; Google Play publication and review are still pending.
 
 ## Publisher metadata
 
@@ -34,6 +34,8 @@ Set up your sound in a full mixer app on a tablet, computer or another device. O
 LARGE CONTROLS WHEN SMALL ONES ARE HARD TO READ
 
 Choose from seven control sizes, from Small to Maximum (4XL). Larger sizes enlarge the labels, level values, fader handles, signal meters and mute buttons together. This can help when small phone controls are difficult to see or touch, including for people with reduced vision.
+
+Set Text size separately from Control size: 75%, 100% (default), 125%, 150%, 175%, 200%, 250% or 300%. This scales the selected control size's labels, values, mute text, status and fader dB markings, and also respects Android's system text size. Fader handles and meters keep their chosen control size. The panel adapts and scrolls; text fitted to a limited screen may be smaller than requested.
 
 A mute group can be one large button. A channel can have a volume fader, a mute button or both. Keep only the controls you use often. Swipe between controls and scroll vertically when the largest sizes need more space.
 
@@ -80,6 +82,8 @@ VEĽKÉ OVLÁDAČE, KEĎ SA DROBNÉ ŤAŽKO ČÍTAJÚ
 
 Vyberte si zo siedmich veľkostí, od Malej až po Maximálnu (4XL). Spolu s ovládačmi sa zväčšujú názvy, číselné hodnoty, úchyty faderov, merače signálu aj tlačidlá mute. Väčšie prvky môžu pomôcť ľuďom so slabším zrakom aj každému, komu sa drobné ovládače na telefóne ťažko čítajú alebo triafajú.
 
+Veľkosť písma nastavte nezávisle od veľkosti ovládačov: 75 %, 100 % (predvolené), 125 %, 150 %, 175 %, 200 %, 250 % alebo 300 %. Menia sa názvy, hodnoty, text mute, stav a dB stupnica fadera; uplatňuje sa aj systémová veľkosť textu v Androide. Úchyty faderov a merače si ponechajú zvolenú veľkosť ovládačov. Panel sa prispôsobí a posúva; na malej obrazovke môže byť text menší než požadovaný.
+
 Mute skupina môže byť jedno veľké tlačidlo. Kanál môže mať fader hlasitosti, mute tlačidlo alebo oboje. Zobrazte si iba prvky, ktoré často používate. Medzi ovládačmi posúvajte panel vodorovne; pri najväčších veľkostiach sa dá posúvať aj zvisle.
 
 Telefón aj druhé ovládacie zariadenie sa pripájajú k rovnakému mixu cez lokálnu sieť. Rozloženie panela na telefóne si vyberiete v XR18 Bubble.
@@ -113,9 +117,9 @@ Vyvinul Pavol Škoda. Podpora: pavolskoda@azet.sk.
 
 The main use case is setting up the full mix on a larger screen, then keeping a few frequently used, large controls on the phone. The description explains that both controllers address the same physical mixer over the local network; it does not promise transfer or synchronization of app layouts between devices.
 
-Seven sizes and enlarged text/touch areas are implemented and tested. The copy describes their practical benefit for people who find small controls hard to see or touch; it does not claim medical efficacy, accessibility certification or complete screen-reader support.
+Seven control sizes and enlarged text/touch areas have prior beta coverage. Version 0.4.2 adds independent text scaling; check the current verification record in `TESTING.md` before submission. The copy describes their practical benefit for people who find small controls hard to see or touch; it does not claim medical efficacy, accessibility certification or complete screen-reader support.
 
-Existing original icon, feature graphic and seven EN/SK phone screenshots remain in `assets/`. Before submitting, add current native screenshots showing: (1) a single large mute-group button, (2) a large channel or master with volume and mute, (3) the seven size choices, and (4) the bottom cross while dragging. Capture connected demonstrations using a real mixer or clearly labelled local simulator. Do not imply a tablet edition has been tested or composite a screen the app cannot render. Keep third-party app icons/logos out of store artwork unless use is authorized.
+Existing original icon, feature graphic and seven EN/SK phone screenshots remain in `assets/`. Two additional native 432×960 screenshots of the current text-size dialog are saved as `assets/screenshots/en-US/05-text-size.png` and `assets/screenshots/sk-SK/05-text-size.png`; both were visually verified. Before submitting, add current native screenshots showing: (1) a single large mute-group button, (2) a large channel or master with volume and mute, (3) the seven control sizes and independent text-size choices, and (4) the bottom cross while dragging. Capture connected demonstrations using a real mixer or clearly labelled local simulator. Do not imply a tablet edition has been tested or composite a screen the app cannot render. Keep third-party app icons/logos out of store artwork unless use is authorized.
 
 ## Checked limits and sources
 

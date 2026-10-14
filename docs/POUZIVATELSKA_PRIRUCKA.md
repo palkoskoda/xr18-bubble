@@ -1,6 +1,6 @@
 # XR18 Bubble — používateľská príručka
 
-Vyvinul Pavol Škoda · podpora: pavolskoda@azet.sk · verzia 0.4.1
+Vyvinul Pavol Škoda · podpora: pavolskoda@azet.sk · verzia 0.4.2
 
 ## Na čo aplikácia slúži
 
@@ -36,6 +36,8 @@ Aplikácia si pamätá názov predchádzajúcej siete, nie jej heslo. Ak sa pri 
 Farebné stĺpce pri faderoch zobrazujú skutočnú úroveň signálu a krátko držanú špičku. Master má L/R merač; kanály, zbernice a DCA jeden stĺpec. Merače kanálov a zberníc sú pred faderom, master za faderom. Mute skupina nemá vlastný merač. Pri tichom signále môže byť stĺpec prázdny; po výpadku dát merač zmizne.
 
 Panel sa prispôsobuje počtu aj druhu ovládačov. Samotná mute skupina má nízky panel, kanál s hlasitosťou vyšší fader. V karte **Ovládače** si vyber jednu zo siedmich veľkostí: Malá, Stredná, Veľká, Extra veľká (XL), Veľmi veľká (2XL), Obrovská (3XL) alebo Maximálna (4XL). Zväčšuje sa aj písmo, úchyt fadera, merače a tlačidlá mute. Samotná bublinka má naďalej tri veľkosti.
+
+Voľba **Veľkosť písma** v rovnakej karte mení text nezávisle od veľkosti ovládačov. Vyber 75 %, 100 % (predvolené), 125 %, 150 %, 175 %, 200 %, 250 % alebo 300 % písma zvolenej veľkosti ovládačov. Súčasne sa uplatňuje systémové zväčšenie textu v Androide. Menia sa názvy, číselné hodnoty, text mute, stav pripojenia a dB stupnica fadera; úchyty faderov a merače si ponechajú zvolenú veľkosť ovládačov. Panel podľa potreby rozšíri alebo zvýši priestor pre text a umožní posúvanie. Text prispôsobený obmedzenej obrazovke nemusí dosiahnuť celú požadovanú veľkosť.
 
 Viac ovládačov posúvaš vodorovne. Ak sa veľké ovládače nezmestia na výšku, posúvaj panel zvisle potiahnutím po názve alebo tlačidle. Potiahnutie priamo po faderi mení hlasitosť.
 

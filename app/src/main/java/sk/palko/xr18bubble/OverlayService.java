@@ -173,10 +173,12 @@ public final class OverlayService extends Service implements MixerClient.Listene
     private Button tool(String text,String description,Runnable click){Button button=Ui.button(this,text,Ui.BG);button.setTextSize(17);button.setContentDescription(description);button.setOnClickListener(v->click.run());return button;}
     /** Fixed labels/actions surround a scrollable body, so large controls remain reachable. */
     private int textHeight(float sp,int lines,int paddingDp){Paint p=new Paint();p.setTextSize(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_SP,sp,getResources().getDisplayMetrics()));Paint.FontMetrics fm=p.getFontMetrics();return (int)Math.ceil((fm.bottom-fm.top)*lines/getResources().getDisplayMetrics().density)+paddingDp;}
-    private int nameHeight(float scale){return Math.max(Math.round(18*scale),textHeight(10*scale,scale>1.35f?2:1,2));}
-    private int valueHeight(float scale){return Math.max(Math.round(20*scale),textHeight(14*scale,1,2));}
-    private int muteHeight(float scale){return Math.max(PanelSizing.muteHeightDp(profile.controlSize()),textHeight(11*scale,2,8));}
-    private void fitText(TextView view,float sp){view.setTextSize(sp);view.setAutoSizeTextTypeUniformWithConfiguration(Math.max(8,(int)(sp*.72f)),Math.max(9,(int)Math.ceil(sp)),1,android.util.TypedValue.COMPLEX_UNIT_SP);}
+    private float fontScale(){return PanelSizing.fontScale(profile.fontSize());}
+    private int nameHeight(float scale){return Math.max(Math.round(18*scale),textHeight(10*scale*fontScale(),scale*fontScale()>1.35f?2:1,2));}
+    private int valueHeight(float scale){return Math.max(Math.round(20*scale),textHeight(14*scale*fontScale(),1,2));}
+    private int muteHeight(float scale){return Math.max(PanelSizing.muteHeightDp(profile.controlSize()),textHeight(11*scale*fontScale(),2,8));}
+    private void fitText(TextView view,float sp){view.setTextSize(sp);view.setAutoSizeTextTypeUniformWithConfiguration(8,Math.max(9,(int)Math.ceil(sp)),1,android.util.TypedValue.COMPLEX_UNIT_SP);}
+    private int textWidth(float sp,String text,boolean mono){Paint p=new Paint();p.setTextSize(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_SP,sp,getResources().getDisplayMetrics()));if(mono)p.setTypeface(Typeface.MONOSPACE);return (int)Math.ceil(p.measureText(text)/getResources().getDisplayMetrics().density);}
     private void hideDismissTarget(){if(dismissTarget!=null){try{wm.removeView(dismissTarget);}catch(IllegalArgumentException ignored){}dismissTarget=null;}dismissCircle=null;dismissArmed=false;if(bubble!=null)bubble.setAlpha(1f);}
     private void showDismissTarget(int screenW,int screenH){
         if(dismissTarget!=null)return;
@@ -195,14 +197,17 @@ public final class OverlayService extends Service implements MixerClient.Listene
         float density=getResources().getDisplayMetrics().density;int screenW=getResources().getDisplayMetrics().widthPixels,screenH=getResources().getDisplayMetrics().heightPixels;
         List<XAirProtocol.Control> faders=new ArrayList<>(),buttons=new ArrayList<>();for(XAirProtocol.Control c:profile.selected()){if(profile.volume(c))faders.add(c);else if(profile.mute(c))buttons.add(c);}
         mixer.setMetersEnabled(open&&!faders.isEmpty());if(!open){meters.clear();meterStamps.clear();}
-        String size=profile.controlSize();float scale=PanelSizing.controlScale(size),headerScale=Math.min(2.2f,scale);
+        String size=profile.controlSize();float scale=PanelSizing.controlScale(size),headerScale=Math.min(2.2f,scale),textFactor=fontScale(),chromeScale=Math.min(3f,headerScale*textFactor);
         int availableWidth=Math.max(96,(int)(screenW/density)-16),availableHeight=Math.max(96,(int)(screenH/density)-64);
-        int headerHeight=Math.max(PanelSizing.headerHeightDp(size),textHeight(17*Math.min(2,scale),1,0)),statusHeight=Math.max(PanelSizing.statusHeightDp(size),textHeight(9*headerScale,1,0));
+        int headerHeight=Math.max(PanelSizing.headerHeightDp(size),Math.max(textHeight(17*Math.min(2,scale),1,0),textHeight(10*chromeScale,1,0))),statusHeight=Math.max(PanelSizing.statusHeightDp(size),textHeight(9*chromeScale,1,0));
         int muteHeight=muteHeight(scale);boolean stripMute=false;for(XAirProtocol.Control c:faders)stripMute|=profile.mute(c);
         int faderHeight=Math.max(PanelSizing.faderHeightDp(size),nameHeight(scale)+valueHeight(scale)+(stripMute?muteHeight+3:0)+Math.round(80*scale));
-        int returnHeight=wifiBorrowed&&wifiRequest!=null?Math.max(PanelSizing.returnHeightDp(size),textHeight(10*headerScale,1,8)+6):0;
+        int returnHeight=wifiBorrowed&&wifiRequest!=null?Math.max(PanelSizing.returnHeightDp(size),textHeight(10*chromeScale,1,8)+6):0;
         int bodyHeight=(faders.isEmpty()?0:faderHeight)+(buttons.isEmpty()?0:muteHeight+6);if(bodyHeight==0)bodyHeight=80;
-        int widthDp=PanelSizing.panelWidthDp(faders.size(),buttons.size(),size,availableWidth),heightDp=Math.min(availableHeight,16+headerHeight+statusHeight+bodyHeight+returnHeight),stripWidth=Math.min(PanelSizing.stripWidth(size),widthDp-16);
+        int desiredStrip=PanelSizing.stripWidth(size);if(textFactor>1)desiredStrip=Math.max(desiredStrip,textWidth(14*scale*textFactor,"+10.0",true)+10);
+        int columns=Math.max(faders.size(),buttons.size());int desiredWidth=columns==0?180:columns*desiredStrip+Math.max(0,columns-1)*6+16;
+        if(textFactor>1)desiredWidth=Math.max(desiredWidth,16+12+Math.round(headerHeight*52f/24)+textWidth(10*chromeScale,"XR18",false)+8);
+        int widthDp=Math.min(availableWidth,Math.max(96,desiredWidth)),heightDp=Math.min(availableHeight,16+headerHeight+statusHeight+bodyHeight+returnHeight),stripWidth=Math.min(desiredStrip,widthDp-16);
         int diameter=PanelSizing.bubbleDiameter(profile.bubbleSize()),width=open?Ui.dp(this,widthDp):Ui.dp(this,diameter);
         params=new WindowManager.LayoutParams(width,Ui.dp(this,open?heightDp:diameter),WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             open?WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH:WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,PixelFormat.TRANSLUCENT);
@@ -228,11 +233,11 @@ public final class OverlayService extends Service implements MixerClient.Listene
             LinearLayout panel=Ui.column(this);panel.setPadding(Ui.dp(this,8),Ui.dp(this,8),Ui.dp(this,8),Ui.dp(this,8));panel.setBackground(Ui.bg(Ui.BG,Ui.dp(this,10)));panel.setElevation(Ui.dp(this,10));panel.setFocusableInTouchMode(true);
             panel.setOnKeyListener((v,key,event)->{if(key==KeyEvent.KEYCODE_BACK&&event.getAction()==KeyEvent.ACTION_UP){closePanel();return true;}return false;});panel.setOnTouchListener((v,event)->{if(event.getAction()==MotionEvent.ACTION_OUTSIDE){closePanel();return true;}return false;});
             LinearLayout header=Ui.row(this);statusDot=new View(this);LinearLayout.LayoutParams dotParams=new LinearLayout.LayoutParams(Ui.dp(this,7*Math.min(2,scale)),Ui.dp(this,7*Math.min(2,scale)));dotParams.rightMargin=Ui.dp(this,5);header.addView(statusDot,dotParams);
-            TextView title=Ui.title(this,widthDp>=128?(profile.get("name").isEmpty()?"XR18":profile.get("name")):"",10);title.setTextSize(10*headerScale);title.setSingleLine();title.setEllipsize(TextUtils.TruncateAt.END);header.addView(title,new LinearLayout.LayoutParams(0,-2,1));
+            TextView title=Ui.title(this,widthDp>=128?(profile.get("name").isEmpty()?"XR18":profile.get("name")):"",10);title.setTextSize(10*chromeScale);title.setSingleLine();title.setEllipsize(TextUtils.TruncateAt.END);header.addView(title,new LinearLayout.LayoutParams(0,-2,1));
             Button options=tool("⋯",s("mixers"),()->launchMain(false,0)),close=tool("×",s("bubble"),()->closePanel());options.setTextSize(17*Math.min(2,scale));close.setTextSize(17*Math.min(2,scale));
             header.addView(options,new LinearLayout.LayoutParams(Ui.dp(this,Math.round(headerHeight*28f/24)),Ui.dp(this,headerHeight)));
             header.addView(close,new LinearLayout.LayoutParams(Ui.dp(this,headerHeight),Ui.dp(this,headerHeight)));panel.addView(header,new LinearLayout.LayoutParams(-1,Ui.dp(this,headerHeight)));
-            statusView=Ui.text(this,"",9,Ui.GOLD);statusView.setTextSize(9*headerScale);statusView.setSingleLine();statusView.setEllipsize(TextUtils.TruncateAt.END);statusView.setOnClickListener(v->ensureConnection());panel.addView(statusView,new LinearLayout.LayoutParams(-1,Ui.dp(this,statusHeight)));
+            statusView=Ui.text(this,"",9,Ui.GOLD);statusView.setTextSize(9*chromeScale);statusView.setSingleLine();statusView.setEllipsize(TextUtils.TruncateAt.END);statusView.setOnClickListener(v->ensureConnection());panel.addView(statusView,new LinearLayout.LayoutParams(-1,Ui.dp(this,statusHeight)));
             ScrollView vertical=new ScrollView(this);vertical.setFillViewport(false);vertical.setVerticalScrollBarEnabled(bodyHeight>heightDp-headerHeight-statusHeight-returnHeight-16);LinearLayout body=Ui.column(this);
             if(!faders.isEmpty()){
                 HorizontalScrollView scroll=new HorizontalScrollView(this);scroll.setHorizontalScrollBarEnabled(faders.size()*(stripWidth+6)>widthDp-16);LinearLayout row=Ui.row(this);row.setGravity(Gravity.TOP);
@@ -244,7 +249,7 @@ public final class OverlayService extends Service implements MixerClient.Listene
             }
             if(faders.isEmpty()&&buttons.isEmpty()){Button choose=Ui.button(this,s("edit_controls"),Ui.CARD);choose.setTextSize(11);choose.setOnClickListener(v->launchMain(false,1));body.addView(choose,new LinearLayout.LayoutParams(-1,Ui.dp(this,80)));}
             vertical.addView(body,new ScrollView.LayoutParams(-1,-2));panel.addView(vertical,new LinearLayout.LayoutParams(-1,0,1));
-            if(returnHeight>0){Button back=Ui.button(this,"↩ "+returnWifiLabel(),Ui.LINE);fitText(back,10*headerScale);back.setSingleLine();back.setEllipsize(TextUtils.TruncateAt.END);back.setContentDescription(returnWifiLabel());back.setOnClickListener(v->returnPreviousWifi());LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,Ui.dp(this,returnHeight-6));lp.topMargin=Ui.dp(this,6);panel.addView(back,lp);}
+            if(returnHeight>0){Button back=Ui.button(this,"↩ "+returnWifiLabel(),Ui.LINE);back.setTextSize(10*chromeScale);back.setSingleLine();back.setEllipsize(TextUtils.TruncateAt.END);back.setContentDescription(returnWifiLabel());back.setOnClickListener(v->returnPreviousWifi());LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,Ui.dp(this,returnHeight-6));lp.topMargin=Ui.dp(this,6);panel.addView(back,lp);}
             window=panel;
         }
         try{if(returnDialog!=null)window.setVisibility(View.INVISIBLE);wm.addView(window,params);if(open&&returnDialog==null)window.requestFocus();}catch(Exception e){window=null;stopSelf();}refresh();
@@ -252,22 +257,23 @@ public final class OverlayService extends Service implements MixerClient.Listene
     private final class Strip {
         final XAirProtocol.Control control;final LinearLayout view;final TextView value;final Button mute;final FaderView fader;final boolean withFader;Boolean lastMuted;
         Strip(XAirProtocol.Control c,boolean volume){
-            float scale=PanelSizing.controlScale(profile.controlSize());control=c;withFader=volume;view=Ui.column(OverlayService.this);view.setBackground(Ui.bg(Ui.CARD,Ui.dp(OverlayService.this,3)));
+            float scale=PanelSizing.controlScale(profile.controlSize()),textScale=scale*fontScale();control=c;withFader=volume;view=Ui.column(OverlayService.this);view.setBackground(Ui.bg(Ui.CARD,Ui.dp(OverlayService.this,3)));
             if(volume){
-                TextView name=Ui.title(OverlayService.this,profile.label(OverlayService.this,c),10);name.setTextSize(10*scale);name.setTextColor(Ui.BG);name.setBackgroundColor(Ui.accent(c));name.setGravity(Gravity.CENTER);name.setMaxLines(scale>1.35f?2:1);name.setEllipsize(TextUtils.TruncateAt.END);view.addView(name,new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,nameHeight(scale))));
-                value=Ui.title(OverlayService.this,"—",14);fitText(value,14*scale);value.setSingleLine();value.setTypeface(android.graphics.Typeface.MONOSPACE);value.setGravity(Gravity.CENTER);view.addView(value,new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,valueHeight(scale))));
-                fader=new FaderView(OverlayService.this,v->{if(ready()&&fresh(c.faderPath)!=null)mixer.set(c.faderPath,Float.valueOf(v));});fader.setControlScale(scale);LinearLayout.LayoutParams rail=new LinearLayout.LayoutParams(-1,0,1);rail.leftMargin=Ui.dp(OverlayService.this,5);rail.rightMargin=Ui.dp(OverlayService.this,5);view.addView(fader,rail);
+                TextView name=Ui.title(OverlayService.this,profile.label(OverlayService.this,c),10);fitText(name,10*textScale);name.setTextColor(Ui.BG);name.setBackgroundColor(Ui.accent(c));name.setGravity(Gravity.CENTER);name.setMaxLines(textScale>1.35f?2:1);name.setEllipsize(TextUtils.TruncateAt.END);view.addView(name,new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,nameHeight(scale))));
+                value=Ui.title(OverlayService.this,"—",14);fitText(value,14*textScale);value.setSingleLine();value.setHorizontallyScrolling(false);value.setTypeface(android.graphics.Typeface.MONOSPACE);value.setGravity(Gravity.CENTER);view.addView(value,new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,valueHeight(scale))));
+                fader=new FaderView(OverlayService.this,v->{if(ready()&&fresh(c.faderPath)!=null)mixer.set(c.faderPath,Float.valueOf(v));});fader.setControlScale(scale);fader.setTextScale(fontScale());LinearLayout.LayoutParams rail=new LinearLayout.LayoutParams(-1,0,1);rail.leftMargin=Ui.dp(OverlayService.this,5);rail.rightMargin=Ui.dp(OverlayService.this,5);view.addView(fader,rail);
             }else{value=null;fader=null;}
             if(profile.mute(c)){
-                mute=Ui.button(OverlayService.this,"—",Ui.LINE);fitText(mute,(volume?10:11)*scale);mute.setMaxLines(2);mute.setEllipsize(TextUtils.TruncateAt.END);mute.setContentDescription(profile.label(OverlayService.this,c)+" "+s("mute"));mute.setOnClickListener(v->{Object raw=fresh(c.mutePath);Long pending=pendingMute.get(c.mutePath);if(ready()&&raw instanceof Number&&(pending==null||SystemClock.elapsedRealtime()-pending>800)){pendingMute.put(c.mutePath,SystemClock.elapsedRealtime());mixer.set(c.mutePath,c.muteValue(!c.isMuted(((Number)raw).intValue())));update(ready());}});
+                mute=Ui.button(OverlayService.this,"—",Ui.LINE);fitText(mute,(volume?10:11)*textScale);mute.setMaxLines(2);mute.setEllipsize(TextUtils.TruncateAt.END);mute.setContentDescription(profile.label(OverlayService.this,c)+" "+s("mute"));mute.setOnClickListener(v->{Object raw=fresh(c.mutePath);Long pending=pendingMute.get(c.mutePath);if(ready()&&raw instanceof Number&&(pending==null||SystemClock.elapsedRealtime()-pending>800)){pendingMute.put(c.mutePath,SystemClock.elapsedRealtime());mixer.set(c.mutePath,c.muteValue(!c.isMuted(((Number)raw).intValue())));update(ready());}});
                 LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,Ui.dp(OverlayService.this,muteHeight(scale)));if(volume){lp.leftMargin=Ui.dp(OverlayService.this,3);lp.rightMargin=Ui.dp(OverlayService.this,3);lp.bottomMargin=Ui.dp(OverlayService.this,3);}view.addView(mute,lp);
             }else mute=null;
         }
+        private android.text.TextPaint muteLabelPaint(){android.text.TextPaint p=new android.text.TextPaint(mute.getPaint());p.setTextSize(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_SP,(withFader?10:11)*PanelSizing.controlScale(profile.controlSize())*fontScale(),getResources().getDisplayMetrics()));return p;}
         void update(boolean ready){
             Object raw=fresh(control.faderPath);Float v=raw instanceof Number?((Number)raw).floatValue():null;if(value!=null)Ui.updateText(value,FaderView.format(v));if(fader!=null)fader.update(v,ready);
             updateMeter();
             if(mute!=null){Object m=fresh(control.mutePath);boolean known=m instanceof Number,muted=known&&control.isMuted(((Number)m).intValue());Long wait=pendingMute.get(control.mutePath);boolean pending=wait!=null&&SystemClock.elapsedRealtime()-wait<800;
-                mute.setEnabled(ready&&known&&!pending);mute.setAlpha(ready&&known?1f:.4f);String state=pending?"…":known?s(muted?"muted":"mute"):"—";String label=profile.label(OverlayService.this,control);if(!withFader&&mute.getWidth()>0)label=TextUtils.ellipsize(label,mute.getPaint(),Math.max(1,mute.getWidth()-mute.getPaddingLeft()-mute.getPaddingRight()),TextUtils.TruncateAt.END).toString();Ui.updateText(mute,withFader?state:label+"\n"+state);mute.setTextColor(Ui.TEXT);
+                mute.setEnabled(ready&&known&&!pending);mute.setAlpha(ready&&known?1f:.4f);String state=pending?"…":known?s(muted?"muted":"mute"):"—";String label=profile.label(OverlayService.this,control);if(!withFader&&mute.getWidth()>0)label=TextUtils.ellipsize(label,muteLabelPaint(),Math.max(1,mute.getWidth()-mute.getPaddingLeft()-mute.getPaddingRight()),TextUtils.TruncateAt.END).toString();Ui.updateText(mute,withFader?state:label+"\n"+state);mute.setTextColor(Ui.TEXT);
                 if(lastMuted==null||lastMuted!=muted){lastMuted=muted;mute.setBackground(Ui.bg(muted?Ui.RED:Ui.LINE,Ui.dp(OverlayService.this,3)));}
             }
         }

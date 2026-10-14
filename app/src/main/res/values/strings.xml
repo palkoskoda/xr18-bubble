@@ -156,5 +156,7 @@
     <string name="developed_by">Developed by %1$s</string>
     <string name="version">Version</string>
     <string name="support">Support</string>
+    <string name="font_size">Text size</string>
+    <string name="font_size_hint">Text size is relative to the selected control size and also follows Android text settings. The panel adjusts to fit larger labels and values.</string>
 </resources>
 

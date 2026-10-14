@@ -156,4 +156,6 @@
     <string name="developed_by">Desarrollado por %1$s</string>
     <string name="version">Versión</string>
     <string name="support">Ayuda</string>
+    <string name="font_size">Tamaño del texto</string>
+    <string name="font_size_hint">El tamaño del texto depende del tamaño de los controles seleccionado y también respeta los ajustes de texto de Android. El panel se adapta a etiquetas y valores más grandes.</string>
 </resources>

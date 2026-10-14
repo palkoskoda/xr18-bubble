@@ -2,11 +2,13 @@
 
 Produkt: XR18 Bubble · autor Pavol Škoda · podpora pavolskoda@azet.sk. Cieľom je užitočný, udržiavaný nástroj bez reklám a účtov; dôveryhodnosť má stáť na jasnom popise, doloženom testovaní a dostupnej podpore.
 
-Aktuálne verejné vydanie 0.4.1 (version code 6) používa GitHub Releases a GitHub Pages. Google Play je plánovaný ďalší distribučný kanál. Registráciu účtu, overenie totožnosti a odoslanie v Play Console musí dokončiť vydavateľ; aplikácia zatiaľ nemá potvrdené schválenie Google Play.
+Pripravovaná verzia je 0.4.2 (version code 7), so samostatným nastavením veľkosti písma. Predchádzajúce verejné vydanie 0.4.1 (version code 6) používa GitHub Releases a GitHub Pages. Google Play je plánovaný ďalší distribučný kanál. Registráciu účtu, overenie totožnosti a odoslanie v Play Console musí dokončiť vydavateľ; aplikácia zatiaľ nemá potvrdené schválenie Google Play.
 
 ## Pripravené lokálne
 
 Natívna Android aplikácia, 12 jazykov, svetlý/tmavý/systémový vzhľad, autorský kredit, kontakt, originálna ikona a feature graphic, popis obchodu EN/SK, dokumentácia, zásady súkromia a statický web v `site/`. Verzia 0.4.1 má sedem veľkostí ovládačov až po Maximum (4XL) a vypnutie potiahnutím bublinky na spodný terč ×. Na [GitHub Releases](https://github.com/palkoskoda/xr18-bubble/releases/tag/v0.4.1-beta) je verejné APK podpísané vydavateľským kľúčom. Samostatné debug APK slúži na lokálne overovanie. Release build vytvára **nepodpísané AAB**, ktoré treba pred uploadom podpísať.
+
+Verzia 0.4.2 pridáva **Veľkosť písma** nezávislú od **Veľkosti ovládačov**: 75 %, 100 % (predvolené), 125 %, 150 %, 175 %, 200 %, 250 % alebo 300 % písma zvolenej veľkosti ovládačov, aj so systémovým zväčšením textu v Androide. Menia sa názvy, hodnoty, text mute, stav pripojenia a dB stupnica; úchyty faderov a merače si ponechajú zvolenú veľkosť ovládačov. Panel sa prispôsobí a umožní posúvanie. Na obmedzenej obrazovke môže byť prispôsobený text menší než požadovaný. Aktuálne nepodpísané AAB 0.4.2 bolo znovu zostavené a overené cez bundletool 1.18.3; pre upload ešte potrebuje podpis.
 
 ## Čo zdôrazniť v popise obchodu
 
@@ -31,13 +33,13 @@ Aktuálna aplikácia nemá reklamy, predplatné ani nákupy. Google uvádza, že
 
 ## Testovacia inštalácia a produkčný podpis
 
-Verejné GitHub APK 0.4.1 používa vydavateľský podpis. Vývojové debug APK má odlišný podpis a slúži na lokálne testovanie. Pred uploadom porovnať certifikát verejného APK s certifikátom podpisového kľúča aplikácie uvedeným v Play Console; samostatne skontrolovať upload certifikát. Vyšší version code je tiež potrebný na bežnú aktualizáciu existujúcej inštalácie; pri pokračovaní po verejnej verzii s kódom 6 pripraviť nový kód, napríklad 7, a zodpovedajúce označenie vydania.
+Verejné GitHub APK 0.4.1 používa vydavateľský podpis. Vývojové debug APK má odlišný podpis a slúži na lokálne testovanie. Pred uploadom porovnať certifikát verejného APK s certifikátom podpisového kľúča aplikácie uvedeným v Play Console; samostatne skontrolovať upload certifikát. Verzia 0.4.2 má kód 7, vyšší než predchádzajúce verejné vydanie s kódom 6. Pred uploadom overiť, že kód 7 ešte nebol použitý v Play Console; pri ďalších vydaniach ho znovu zvýšiť.
 
 Pri odlišnom distribučnom podpise nie je možná priama aktualizácia pod rovnakým balíkom. Prechod z debug inštalácie môže vyžadovať odinštalovanie a opätovné nastavenie profilu. Odinštalovanie odstráni lokálne nastavenia aj kľúč pre heslo Wi-Fi; automatické cloudové zálohovanie je vypnuté. Existujúce inštalácie neodinštalovať bez vedomého rozhodnutia používateľa.
 
 ## Záznam pre kontrolu Google Play
 
-Podľa `APP_ACCESS_AND_FGS.md` pripraviť krátke video na skutočnom podporovanom zariadení a kompatibilnom mixe. Ukázať spustenie bublinky, synchronizáciu stavu pred povolením ovládania, veľkosť Maximum (4XL), vybrané často používané prvky a vypnutie potiahnutím na × aj cez notifikáciu. Bez mixu ostávajú živé ovládače zablokované; v pokynoch pre kontrolóra túto závislosť jasne uviesť. Heslá Wi-Fi a súkromné notifikácie do videa nepatria.
+Podľa `APP_ACCESS_AND_FGS.md` pripraviť krátke video na skutočnom podporovanom zariadení a kompatibilnom mixe. Ukázať spustenie bublinky, synchronizáciu stavu pred povolením ovládania, veľkosť Maximum (4XL), samostatnú veľkosť písma, vybrané často používané prvky a vypnutie potiahnutím na × aj cez notifikáciu. Bez mixu ostávajú živé ovládače zablokované; v pokynoch pre kontrolóra túto závislosť jasne uviesť. Heslá Wi-Fi a súkromné notifikácie do videa nepatria.
 
 ## Dôveryhodnosť po vydaní
 

@@ -6,6 +6,8 @@ LARGE CONTROLS WHEN SMALL ONES ARE HARD TO READ
 
 Choose from seven control sizes, from Small to Maximum (4XL). Larger sizes enlarge the labels, level values, fader handles, signal meters and mute buttons together. This can help when small phone controls are difficult to see or touch, including for people with reduced vision.
 
+Set Text size separately from Control size: 75%, 100% (default), 125%, 150%, 175%, 200%, 250% or 300%. This scales the selected control size's labels, values, mute text, status and fader dB markings, and also respects Android's system text size. Fader handles and meters keep their chosen control size. The panel adapts and scrolls; text fitted to a limited screen may be smaller than requested.
+
 A mute group can be one large button. A channel can have a volume fader, a mute button or both. Keep only the controls you use often. Swipe between controls and scroll vertically when the largest sizes need more space.
 
 The phone and your other controller each connect to the same mixer over the local network. Choose the phone's panel layout in XR18 Bubble.

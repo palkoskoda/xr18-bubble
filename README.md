@@ -26,6 +26,7 @@ Android 10 or newer is required. The app is designed for Behringer XR18/X18 and 
 - Choose from master, four DCAs, four mute groups, six buses and sixteen channels.
 - Add or remove controls with checkboxes; choose volume, mute or both where available.
 - Adaptive panel layout, seven control sizes from Small through Maximum (4XL), three bubble sizes and custom labels. Larger controls also enlarge labels, fader handles, signal meters and mute buttons. Scroll between controls and vertically when the panel cannot fit on screen.
+- Separate text size from 75% to 300% of the selected control size's text, in addition to Android's system text scale. Enlarge labels, values, mute text, connection status and fader dB markings while retaining the chosen fader-handle and meter size.
 - Live signal meters with peak hold, including stereo master levels.
 - Remember the mixer Wi-Fi after a verified mixer response and request it when opening the panel.
 - Return-to-Wi-Fi button and close prompt after an opening that changed the network. Staying at the mixer does not cause repeated prompts on subsequent openings on the same network.
@@ -42,6 +43,8 @@ Android 10 or newer is required. The app is designed for Behringer XR18/X18 and 
 5. Open the bubble. Controls become active only after the mixer is verified and all selected values are synchronized.
 
 To make the controls easier to see and touch, choose a larger **Control size** on the Controls screen: Small, Medium, Large, Extra large (XL), Very large (2XL), Huge (3XL), or Maximum (4XL). At the largest sizes, swipe horizontally between controls and scroll vertically from a title or button. Dragging directly on a fader changes its level.
+
+On the same screen, **Text size** independently offers 75%, 100% (default), 125%, 150%, 175%, 200%, 250% and 300%. These percentages apply to the text of the selected control size and also respect Android's system text setting. The panel makes more room for larger text and scrolls when needed; text fitted to the screen may be smaller than the requested maximum.
 
 To stop the floating controller, drag the collapsed bubble onto the **×** target that appears at the bottom of the screen and release it. Releasing elsewhere keeps the bubble running and snaps it to the nearest edge. You can show it again from the app.
 

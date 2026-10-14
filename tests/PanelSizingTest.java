@@ -5,6 +5,16 @@ public final class PanelSizingTest {
     private static int checks;
 
     public static void main(String[] args) {
+        String[] fontSizes={"75","100","125","150","175","200","250","300"};
+        float[] fontScales={.75f,1f,1.25f,1.5f,1.75f,2f,2.5f,3f};
+        check(java.util.Arrays.equals(fontSizes,PanelSizing.fontSizes()),"all font choices in order");
+        for(int i=0;i<fontSizes.length;i++){
+            check(Math.abs(PanelSizing.fontScale(fontSizes[i])-fontScales[i])<.0001f,"font factor "+fontSizes[i]);
+            if(i>0)check(PanelSizing.fontScale(fontSizes[i])>PanelSizing.fontScale(fontSizes[i-1]),"font factors increase");
+        }
+        for(String unknown:new String[]{null,"","bad","-10","NaN","Infinity","9999999999999"})check(PanelSizing.fontScale(unknown)==1f,"invalid font preference retains default");
+        String[] copy=PanelSizing.fontSizes();copy[0]="broken";
+        check("75".equals(PanelSizing.fontSizes()[0]),"font choices are defensive copies");
         equal(64, PanelSizing.stripWidth("small"), "small strip");
         equal(76, PanelSizing.stripWidth("medium"), "medium strip");
         equal(92, PanelSizing.stripWidth("large"), "large strip");

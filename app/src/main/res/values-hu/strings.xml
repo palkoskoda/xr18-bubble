@@ -156,4 +156,6 @@
     <string name="developed_by">Készítette: %1$s</string>
     <string name="version">Verzió</string>
     <string name="support">Támogatás</string>
+    <string name="font_size">Szövegméret</string>
+    <string name="font_size_hint">A szövegméret a kiválasztott vezérlőmérethez igazodik, és az Android szövegbeállításait is követi. A panel elrendezése alkalmazkodik a nagyobb feliratokhoz és értékekhez.</string>
 </resources>
