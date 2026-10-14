@@ -51,6 +51,7 @@ The screenshots use a local **XR18 Demo** simulator. They demonstrate the interf
 
 ## Documentation and support
 
+- [Website — English / Slovenčina](https://palkoskoda.github.io/xr18-bubble/)
 - [Slovak user guide](docs/POUZIVATELSKA_PRIRUCKA.md)
 - [Testing and coverage](TESTING.md)
 - [Privacy policy](https://palkoskoda.github.io/xr18-bubble/privacy.html)

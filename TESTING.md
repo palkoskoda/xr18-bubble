@@ -26,3 +26,7 @@ More phones, Android/OEM versions, router configurations and mixer firmware; lon
 ## Running tests
 
 See [BUILDING.md](BUILDING.md). ADB scripts are restricted to the dedicated test emulator `emulator-5584`; they must not operate on a physical phone. The fake mixer uses loopback and the emulator host alias `10.0.2.2`. Ensure UDP port 10024 is available before starting a simulator.
+
+## Website
+
+The English and Slovak home/privacy pages were checked at 1280, 375 and 320 CSS pixels. Language switches preserve home/privacy context; local links and all image resources resolve; no horizontal overflow or browser errors were found. Desktop/mobile renders and localized screenshot cards were visually checked. Site assets are original app screenshots, presented without changing their source pixels.
