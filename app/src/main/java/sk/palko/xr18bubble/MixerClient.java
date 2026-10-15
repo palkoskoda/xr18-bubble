@@ -49,7 +49,9 @@ public final class MixerClient {
     private static final long FRESH_MS = 3500;
     private static final long DISCOVERY_MS = 2200;
     private static final Set<String> MODELS = Collections.unmodifiableSet(new HashSet<>(
-            Arrays.asList("XR18", "MR18", "X18")));
+            // The newer XR18 hardware reports XR18V2 in /xinfo (firmware 1.23).
+            // Keep an explicit allowlist: unrelated mixers must not unlock controls.
+            Arrays.asList("XR18", "XR18V2", "MR18", "X18")));
     // true means a float fader; false means an integer boolean switch.
     private final Map<String, Boolean> paths = new LinkedHashMap<>();
     private final Context context;
