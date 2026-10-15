@@ -16,7 +16,7 @@ Developed by **Pavol Škoda**. Free to use, with no ads, analytics, accounts or 
 
 ## Download
 
-Download the APK from [Releases](https://github.com/palkoskoda/xr18-bubble/releases). The first public release is a beta; test it with your phone and mixer before using it during a performance. Android may ask you to allow installation from the browser or file manager you use to open the APK.
+Download [0.4.4 beta APK](https://github.com/palkoskoda/xr18-bubble/releases/download/v0.4.4-beta/xr18-bubble-0.4.4.apk), or browse [Releases](https://github.com/palkoskoda/xr18-bubble/releases). This update fixes discovery and connection for XR18 hardware reporting `XR18V2`. The first public release is a beta; test it with your phone and mixer before using it during a performance. Android may ask you to allow installation from the browser or file manager you use to open the APK.
 
 Android 10 or newer is required. The app is designed for Behringer XR18/X18 and Midas MR18 mixers using the local X AIR OSC/UDP protocol. Real-hardware verification so far covers an XR18 and an Android 16 phone; broader device and firmware coverage is still needed.
 
