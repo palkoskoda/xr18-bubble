@@ -1,0 +1,87 @@
+# Apple preview testing
+
+## Verified preview: 2026-10-15
+
+Feature commit: `f4ade7d`. [Successful GitHub Actions run](https://github.com/palkoskoda/xr18-bubble/actions/runs/38708663324).
+
+The macOS 15 runners used Xcode 16.4 and the iOS 18.5 SDK. Simulator targets were iPhone SE (3rd generation) and iPad (10th generation). Both matrix jobs completed successfully.
+
+| Check | Result |
+| --- | --- |
+| Shared OSC/catalog/meter/session-safety package | 17 test methods passed, including 10,001 taper samples |
+| iPhone app-hosted storage, Keychain, demo isolation and UDP integration | 4 test methods passed |
+| iPhone native UI interactions | 3 test methods passed |
+| iPad native UI interactions | 3 test methods passed |
+| Generic physical-device target, including Wi-Fi API code | Compiled without distribution signing |
+| Actual fake-mixer SET log | Exactly the intended fader and mute writes; no offline/demo writes |
+| EN/SK resources and app metadata preflight | 99 matching keys, valid privacy/entitlements and 1024px icon |
+
+The UI checks use actual touch gestures and verify mute/fader changes, light appearance, 4XL controls with 300% text, Slovak translation, return from settings, menu access after landscape rotation, and a profile containing only a mute-group button. A native picker-label localization issue, unsigned-simulator Keychain access and compact-list test scrolling were corrected before this passing run.
+
+Published [screenshots](docs/SCREENSHOTS.md) are unmodified native portrait captures from this run. The landscape check verifies menu interaction after rotation; the gallery uses settled portrait captures.
+
+These results do not establish real XR18 connectivity or Wi-Fi association on Apple hardware, iOS 26 multitasking behaviour, an App Store-compliant SDK/archive, or App Review acceptance. Repeat the physical-device checks below and build using the SDK required at submission time before a public Apple release.
+
+These checks are intended for the initial iOS 17+ port. They separate deterministic simulator checks from behaviour that can only be proven on a physical iPhone or iPad connected to the relevant Wi-Fi network.
+
+## macOS setup
+
+Install Xcode and XcodeGen, then generate the project:
+
+```sh
+cd apple
+brew install xcodegen
+xcodegen generate
+open XR18Panel.xcodeproj
+```
+
+Run the unit tests for the shared protocol/model package:
+
+```sh
+swift test --package-path Packages/XR18Core
+```
+
+Select an iOS 17 or later iPhone/iPad simulator in Xcode. The preview CI workflow can also build the simulator target and collect screenshots. A simulator artifact is for Mac review only; it cannot be installed on an iPhone and does not test the device’s Wi-Fi behaviour.
+
+Before running the app-hosted transport test, start the fixture on the same Mac from the repository root:
+
+```sh
+python3 tools/fake_mixer.py --host 127.0.0.1 --meters --log /tmp/xr18-test-sets.jsonl
+```
+
+The transport test verifies initial synchronization, fader/mute readback, live meter reception, and discarded writes before/after connection. The fixture is started automatically in CI. Pure package tests do not require it.
+
+## Simulator and fixture checks
+
+Use the launch arguments `--demo --ui-testing` for deterministic offline UI checks. Demo mode must never contact an XR18 or send an OSC/UDP packet.
+
+Review the following manually or through the first-pass UI tests:
+
+- English and Slovak language selection, including relaunch persistence.
+- Last-used profile selection and the initial profile chooser.
+- Master, DCA, mute-group, bus, and channel control rows.
+- Volume controls with a mute action where supported, and mute-only controls without an unnecessary fader.
+- The full set of large control sizes and independent text sizes, including the extra-large accessibility options.
+- Loading, connected, stale, and error states. Controls must stay disabled until the fixture supplies a fresh validated state.
+- Safe handling of a failed or rejected action: the displayed value must be refreshed from acknowledged state rather than assuming that a local tap succeeded.
+- iPhone compact layout and iPad regular, Slide Over, and windowed layouts where the selected simulator supports them.
+- Saved profile editing, removal, and return-profile selection without exposing credentials in logs or screenshots.
+
+## Physical-device checks
+
+The following require a real iPhone or iPad, a Mac with Xcode signing, and an XR18 or compatible test fixture on the relevant network:
+
+- Grant Local Network permission and confirm that the app can reach the manually configured XR18 host.
+- Join a configured mixer Wi-Fi profile through `NEHotspotConfiguration`, including the system approval flow.
+- Confirm that Wi-Fi association alone does not turn the panel green; the app must receive a fresh XR18 response first.
+- Verify actual OSC/UDP reads and writes, meter updates, mute state, and reconnect behaviour while the mixer is running.
+- Configure a known return profile and verify the user-confirmed return flow. Do not expect the app to read an arbitrary saved Wi-Fi password from iOS.
+- Test loss of network, mixer restart, stale state, and recovery without replaying unacknowledged destructive commands.
+
+No physical-device Wi-Fi, join, return-network, or App Store validation is claimed by this document. Record the device model, iOS version, XR18 firmware, network names without passwords, and the result of each physical test when those tests become available.
+
+## Security and release checks
+
+Never commit provisioning profiles, signing certificates, private keys, Wi-Fi passwords, or mixer credentials. Use test profiles and local Keychain data. Before any store submission, repeat the tests with release configuration, review the Local Network usage text, verify the privacy declarations, and validate the archive on a real device.
+
+Slovak note: Simulátor je vhodný na kontrolu vzhľadu, jazykov, veľkostí a demo komunikácie. Skutočné prepínanie Wi‑Fi, povolenie lokálnej siete a ovládanie XR18 sa musí overiť na fyzickom iPhone/iPade.
