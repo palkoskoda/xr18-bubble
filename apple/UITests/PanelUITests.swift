@@ -17,9 +17,20 @@ final class PanelUITests: XCTestCase {
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
     private func settings(_ app: XCUIApplication) {
-        app.buttons["panel.menu"].tap()
-        app.buttons["panel.settings"].tap()
+        openMenu(app)
+        let action = app.buttons.matching(NSPredicate(format: "identifier == %@ OR label == %@ OR label == %@",
+            "panel.settings", "Settings", "Nastavenia")).firstMatch
+        XCTAssertTrue(action.waitForExistence(timeout: 5))
+        action.tap()
         XCTAssertTrue(element(app, "settings.textSize").waitForExistence(timeout: 5))
+    }
+    private func openMenu(_ app: XCUIApplication) {
+        let menu = element(app, "panel.menu")
+        XCTAssertTrue(menu.exists)
+        XCTAssertGreaterThan(menu.frame.width, 0)
+        // SwiftUI's toolbar Menu wrapper has no AX hit point on iOS 18.
+        // Use its observed frame; the following assertion verifies a real menu opens.
+        menu.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
     }
     func testDemoMuteAndFader() {
         let app = launch()
@@ -61,7 +72,9 @@ final class PanelUITests: XCTestCase {
         screenshot("iOS-slovak-4XL-300")
         XCUIDevice.shared.orientation = .landscapeLeft
         screenshot("iOS-landscape-4XL-300")
-        XCTAssertTrue(app.buttons["panel.menu"].isHittable)
+        settings(app)
+        XCTAssertTrue(app.buttons["settings.done"].exists)
+        app.buttons["settings.done"].tap()
         XCUIDevice.shared.orientation = .portrait
     }
     func testProfileCheckboxesAndMuteOnlyPanel() {

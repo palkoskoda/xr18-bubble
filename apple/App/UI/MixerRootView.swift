@@ -87,6 +87,8 @@ struct MixerRootView: View {
                         .accessibilityIdentifier("panel.finish")
                     } label: {
                         Image(systemName: "ellipsis.circle")
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
                             .accessibilityLabel(Text("menu.title"))
                     }
                     .accessibilityIdentifier("panel.menu")
