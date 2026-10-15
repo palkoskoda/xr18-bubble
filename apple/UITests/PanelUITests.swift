@@ -40,6 +40,11 @@ final class PanelUITests: XCTestCase {
     func testMaximumSizeTextAndSlovak() {
         let app = launch()
         settings(app)
+        element(app, "settings.theme").tap()
+        app.buttons["Light"].tap()
+        app.buttons["settings.done"].tap()
+        screenshot("iOS-demo-light")
+        settings(app)
         element(app, "settings.size").tap()
         app.descendants(matching: .any).matching(NSPredicate(format: "label == %@", "Maximum · 4XL")).firstMatch.tap()
         element(app, "settings.textSize").tap()
@@ -49,6 +54,10 @@ final class PanelUITests: XCTestCase {
         app.buttons["Slovenčina"].tap()
         app.buttons["settings.done"].tap()
         XCTAssertTrue(element(app, "panel.status").label.contains("Ukážka"))
+        let value = app.staticTexts["master.value"]
+        XCTAssertTrue(value.exists)
+        XCTAssertGreaterThanOrEqual(value.frame.minX, app.windows.firstMatch.frame.minX)
+        XCTAssertLessThanOrEqual(value.frame.maxX, app.windows.firstMatch.frame.maxX + 1)
         screenshot("iOS-slovak-4XL-300")
         XCUIDevice.shared.orientation = .landscapeLeft
         screenshot("iOS-landscape-4XL-300")

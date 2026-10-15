@@ -1,68 +1,159 @@
 name: Apple preview
+
 on:
   workflow_dispatch:
   push:
     branches: [main, 'feature/apple-*']
-    paths: ['apple/**', '.github/workflows/apple-preview.yml', 'tools/fake_mixer.py']
+    paths:
+      - 'apple/**'
+      - '.github/workflows/apple-preview.yml'
+      - 'tools/fake_mixer.py'
   pull_request:
-    paths: ['apple/**', '.github/workflows/apple-preview.yml', 'tools/fake_mixer.py']
+    paths:
+      - 'apple/**'
+      - '.github/workflows/apple-preview.yml'
+      - 'tools/fake_mixer.py'
+
 permissions:
   contents: read
+
 concurrency:
-  group: apple-preview-${{ github.ref }}
+  group: apple-native-preview-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   simulator:
+    name: ${{ matrix.device }} simulator
     runs-on: macos-15
     timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - device: phone
+            simulator_name: iPhone
+          - device: tablet
+            simulator_name: iPad
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Show toolchain
         run: |
           xcodebuild -version
           swift --version
-          xcrun simctl list devices available
-      - name: Test protocol and safety package
-        run: swift test --package-path apple/Packages/XR18Core
-      - name: Generate project
+
+      - name: Install XcodeGen and generate project
         run: |
           brew install xcodegen
           cd apple
           xcodegen generate
-      - name: Choose iPhone and iPad simulators
+
+      - name: Resource preflight
+        run: python3 apple/scripts/check_resources.py
+
+      - name: Choose phone and tablet simulators
         run: python3 apple/scripts/choose_simulators.py >> "$GITHUB_ENV"
-      - name: Compile physical-device Wi-Fi code without distribution signing
-        run: xcodebuild build -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination 'generic/platform=iOS' -derivedDataPath apple/DeviceDerivedData CODE_SIGNING_ALLOWED=NO
-      - name: Start local mixer fixture
+
+      - name: Select matrix simulator
         run: |
+          if [ "${{ matrix.device }}" = "phone" ]; then
+            echo "SIMULATOR_ID=$IPHONE_ID" >> "$GITHUB_ENV"
+          else
+            echo "SIMULATOR_ID=$IPAD_ID" >> "$GITHUB_ENV"
+          fi
           mkdir -p apple/artifacts
-          python3 tools/fake_mixer.py --host 127.0.0.1 --meters --log apple/artifacts/sets.jsonl > apple/artifacts/fake-mixer.log 2>&1 &
+
+      - name: Run shared core tests
+        if: matrix.device == 'phone'
+        run: swift test --package-path apple/Packages/XR18Core
+
+      - name: Compile generic iOS device target
+        if: matrix.device == 'phone'
+        run: >-
+          xcodebuild build
+          -project apple/XR18Panel.xcodeproj
+          -scheme XR18Panel
+          -destination 'generic/platform=iOS'
+          -derivedDataPath apple/DeviceDerivedData
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Build simulator app
+        run: >-
+          xcodebuild build
+          -project apple/XR18Panel.xcodeproj
+          -scheme XR18Panel
+          -destination "platform=iOS Simulator,id=$SIMULATOR_ID"
+          -derivedDataPath apple/DerivedData
+          CODE_SIGNING_ALLOWED=YES
+          CODE_SIGN_IDENTITY=-
+
+      - name: Start local mixer fixture
+        if: matrix.device == 'phone'
+        run: |
+          python3 tools/fake_mixer.py \
+            --host 127.0.0.1 \
+            --meters \
+            --log apple/artifacts/sets.jsonl \
+            > apple/artifacts/fake-mixer.log 2>&1 &
           echo $! > apple/artifacts/fake-mixer.pid
-      - name: Test iPhone simulator
-        run: |
-          xcodebuild test -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination "platform=iOS Simulator,id=$IPHONE_ID" -parallel-testing-enabled NO -derivedDataPath apple/DerivedData CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- -resultBundlePath apple/artifacts/iPhone.xcresult
-      - name: Test iPad simulator
-        if: success() || failure()
-        run: |
-          xcodebuild test -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination "platform=iOS Simulator,id=$IPAD_ID" -parallel-testing-enabled NO -derivedDataPath apple/DerivedData CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- -only-testing:XR18PanelUITests -resultBundlePath apple/artifacts/iPad.xcresult
-      - name: Export screenshots and simulator app
+
+      - name: Run phone unit and UI tests with fixture
+        if: matrix.device == 'phone'
+        run: >-
+          xcodebuild test
+          -project apple/XR18Panel.xcodeproj
+          -scheme XR18Panel
+          -destination "platform=iOS Simulator,id=$SIMULATOR_ID"
+          -parallel-testing-enabled NO
+          -derivedDataPath apple/DerivedData
+          CODE_SIGNING_ALLOWED=YES
+          CODE_SIGN_IDENTITY=-
+          -resultBundlePath apple/artifacts/phone.xcresult
+
+      - name: Run tablet UI tests
+        if: matrix.device == 'tablet'
+        run: >-
+          xcodebuild test
+          -project apple/XR18Panel.xcodeproj
+          -scheme XR18Panel
+          -destination "platform=iOS Simulator,id=$SIMULATOR_ID"
+          -parallel-testing-enabled NO
+          -derivedDataPath apple/DerivedData
+          CODE_SIGNING_ALLOWED=YES
+          CODE_SIGN_IDENTITY=-
+          -only-testing:XR18PanelUITests
+          -resultBundlePath apple/artifacts/tablet.xcresult
+
+      - name: Export result attachments and simulator app
         if: always()
         run: |
-          for device in iPhone iPad; do
-            if [ -d "apple/artifacts/$device.xcresult" ]; then
-              xcrun xcresulttool export attachments --path "apple/artifacts/$device.xcresult" --output-path "apple/artifacts/$device-attachments" || true
-            fi
-          done
-          if [ -d apple/DerivedData/Build/Products/Debug-iphonesimulator/XR18Panel.app ]; then
-            ditto -c -k --sequesterRsrc --keepParent apple/DerivedData/Build/Products/Debug-iphonesimulator/XR18Panel.app apple/artifacts/XR18Panel-simulator.zip
+          result="apple/artifacts/${{ matrix.device }}.xcresult"
+          if [ -d "$result" ]; then
+            xcrun xcresulttool export attachments \
+              --path "$result" \
+              --output-path "apple/artifacts/${{ matrix.device }}-attachments" || true
           fi
-          if [ -f apple/artifacts/fake-mixer.pid ]; then kill "$(cat apple/artifacts/fake-mixer.pid)" || true; fi
-      - name: Audit actual mixer writes
-        if: success() || failure()
+
+          app="apple/DerivedData/Build/Products/Debug-iphonesimulator/XR18Panel.app"
+          if [ -d "$app" ]; then
+            ditto -c -k --sequesterRsrc --keepParent \
+              "$app" \
+              "apple/artifacts/XR18Panel-${{ matrix.device }}-simulator.zip"
+          fi
+
+          if [ -f apple/artifacts/fake-mixer.pid ]; then
+            kill "$(cat apple/artifacts/fake-mixer.pid)" || true
+          fi
+
+      - name: Audit phone fixture writes
+        if: always() && matrix.device == 'phone'
         run: python3 apple/scripts/audit_fixture.py apple/artifacts/sets.jsonl
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: apple-preview-results
+          name: apple-preview-${{ matrix.device }}
           path: apple/artifacts
+          if-no-files-found: warn
           retention-days: 14

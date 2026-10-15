@@ -27,12 +27,14 @@ struct MixerRootView: View {
                             .accessibilityIdentifier("panel.demo")
                     }
                 } else {
+                    GeometryReader { viewport in
                     ScrollView([.horizontal, .vertical]) {
                         HStack(alignment: .top, spacing: 12 * scale) {
                             ForEach(model.controls) { control in
                                 let generation = model.interactionGeneration
                                 MixerControlCard(control: control, scale: scale,
                                     textScale: CGFloat(model.textPercent) / 100,
+                                    maximumWidth: max(120, viewport.size.width - 32),
                                     interactive: interactive,
                                     onFader: { model.setFader(control.id, value: $0, expectedGeneration: generation) },
                                     onMute: { model.toggleMute(control.id, expectedGeneration: generation) })
@@ -43,6 +45,7 @@ struct MixerRootView: View {
                     }
                     .accessibilityIdentifier("mixer.panel")
                     .background(Color(uiColor: .systemGroupedBackground))
+                    }
                 }
             }
             .navigationTitle(model.selectedProfile?.name ?? String(localized: "app.name"))
@@ -160,24 +163,26 @@ private struct MixerControlCard: View {
     let control: PanelControlState
     let scale: CGFloat
     let textScale: CGFloat
+    let maximumWidth: CGFloat
     let interactive: Bool
     let onFader: (Float) -> Void
     let onMute: () -> Void
     @ScaledMetric(relativeTo: .body) private var baseFont: CGFloat = 17
     private var accent: Color { PanelAppearance.accent(control.id) }
     private var fontSize: CGFloat { baseFont * scale * textScale }
-    private var width: CGFloat { max(128 * scale, fontSize * 7.5) }
+    private var width: CGFloat { min(maximumWidth, max(128 * scale, fontSize * 7.5)) }
 
     var body: some View {
         VStack(spacing: 12 * scale) {
             PanelAppearance.title(control.id, fallback: control.title)
                 .font(.system(size: fontSize, weight: .semibold))
+                .lineLimit(1).minimumScaleFactor(0.1)
                 .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 6 * scale)
             if control.hasFader {
                 Text(control.fader.map(PanelAppearance.decibels) ?? "— dB")
                     .font(.system(size: fontSize, weight: .medium, design: .monospaced))
-                    .fixedSize()
+                    .lineLimit(1).minimumScaleFactor(0.1)
                     .accessibilityIdentifier("\(control.id).value")
                 VerticalMixerFader(value: control.fader ?? 0, meter: control.meter,
                     scale: scale, accent: accent, interactive: interactive && control.fader != nil,
@@ -200,6 +205,7 @@ private struct MixerControlCard: View {
                     VStack(spacing: 4 * scale) {
                         Image(systemName: control.muted == true ? "speaker.slash.fill" : "speaker.wave.2.fill")
                         Text(LocalizedStringKey(control.muted == true ? "control.muted" : "control.mute"))
+                            .lineLimit(1).minimumScaleFactor(0.1)
                     }
                     .font(.system(size: fontSize, weight: .bold))
                     .frame(maxWidth: .infinity, minHeight: max(52, fontSize * 3))
@@ -257,7 +263,7 @@ private struct VerticalMixerFader: View {
                 }
                 .frame(width: 7 * scale)
                 .padding(.vertical, knobHeight / 2)
-                .offset(x: 37 * scale)
+                .offset(x: min(37 * scale, max(0, geometry.size.width / 2 - 7 * scale)))
                 .accessibilityHidden(true)
                 RoundedRectangle(cornerRadius: 5 * scale)
                     .fill(LinearGradient(colors: [accent.opacity(0.85), accent], startPoint: .top, endPoint: .bottom))
