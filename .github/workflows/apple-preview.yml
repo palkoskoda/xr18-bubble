@@ -31,6 +31,8 @@ jobs:
           xcodegen generate
       - name: Choose iPhone and iPad simulators
         run: python3 apple/scripts/choose_simulators.py >> "$GITHUB_ENV"
+      - name: Compile physical-device Wi-Fi code without distribution signing
+        run: xcodebuild build -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination 'generic/platform=iOS' -derivedDataPath apple/DeviceDerivedData CODE_SIGNING_ALLOWED=NO
       - name: Start local mixer fixture
         run: |
           mkdir -p apple/artifacts
@@ -40,6 +42,7 @@ jobs:
         run: |
           xcodebuild test -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination "platform=iOS Simulator,id=$IPHONE_ID" -parallel-testing-enabled NO -derivedDataPath apple/DerivedData CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- -resultBundlePath apple/artifacts/iPhone.xcresult
       - name: Test iPad simulator
+        if: success() || failure()
         run: |
           xcodebuild test -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination "platform=iOS Simulator,id=$IPAD_ID" -parallel-testing-enabled NO -derivedDataPath apple/DerivedData CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- -only-testing:XR18PanelUITests -resultBundlePath apple/artifacts/iPad.xcresult
       - name: Export screenshots and simulator app
@@ -55,6 +58,7 @@ jobs:
           fi
           if [ -f apple/artifacts/fake-mixer.pid ]; then kill "$(cat apple/artifacts/fake-mixer.pid)" || true; fi
       - name: Audit actual mixer writes
+        if: success() || failure()
         run: python3 apple/scripts/audit_fixture.py apple/artifacts/sets.jsonl
       - uses: actions/upload-artifact@v4
         if: always()

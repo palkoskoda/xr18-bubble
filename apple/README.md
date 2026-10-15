@@ -2,7 +2,7 @@
 
 This directory is the initial native Apple port of XR18 Bubble. It targets iOS 17 and later and is intended to provide the same quick-access workflow as the Android app: open a small, focused control panel, connect to a saved XR18 profile, verify a fresh mixer state, and adjust only the controls that are needed most often.
 
-The Apple version is designed for iPhone and iPad rather than as an Android-style system overlay. On iPhone it is a normal app with a fast last-used panel and system shortcuts where appropriate. On iPad it can also be used in a compact Slide Over or windowed layout. The user can keep the app in the Dock for quick access.
+The Apple version is designed for iPhone and iPad rather than as an Android-style system overlay. On iPhone it is a normal app with a fast last-used panel. On iPad it can also be used in a compact Slide Over or windowed layout. The user can keep the app in the Dock for quick access. Control Center and App Shortcuts integrations are future work.
 
 Planned and implemented port scope:
 
@@ -37,6 +37,8 @@ swift test --package-path Packages/XR18Core
 ```
 
 For a repeatable preview build, use the repository’s GitHub Actions workflow when available. The workflow produces simulator-oriented screenshots and a simulator app artifact; those artifacts are useful for review on a Mac, but they are not an installable iPhone IPA and are not an App Store release.
+
+Simulator builds use a local ad-hoc signature and a separate simulator-only Keychain identity. This does not require an Apple membership or certificate. Physical-device signing uses `XR18Panel.entitlements` and a real development team; the simulator identity must never be used for an archive or device build.
 
 Launch arguments used by the preview contract:
 

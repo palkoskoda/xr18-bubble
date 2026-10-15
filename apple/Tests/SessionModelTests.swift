@@ -49,7 +49,27 @@ final class SessionModelTests: XCTestCase {
         XCTAssertEqual(restored.textPercent, 300)
         XCTAssertEqual(restored.controlSize, "4xl")
         restored.deleteProfile(profile.id)
-        XCTAssertTrue(restored.profiles.isEmpty)
+        XCTAssertTrue(restored.profiles.isEmpty, restored.errorMessage ?? "Profile was not removed")
+    }
+
+    @MainActor func testPasswordsStayInKeychainAndAreDeletedWithProfile() throws {
+        let name = "xr18.keychain.tests.\(UUID())"
+        let defaults = UserDefaults(suiteName: name)!
+        defer { defaults.removePersistentDomain(forName: name) }
+        let model = SessionModel(defaults: defaults)
+        let profile = MixerProfile(name: "Credential fixture", wifiSSID: "Test mixer", returnSSID: "Test home")
+        let fixturePassword = "fixture-only-\(UUID())"
+        model.saveProfile(profile, password: fixturePassword, returnPassword: fixturePassword)
+        XCTAssertNil(model.errorMessage)
+        XCTAssertEqual(model.password(for: profile, returning: false), fixturePassword)
+        XCTAssertEqual(model.password(for: profile, returning: true), fixturePassword)
+        let json = String(data: try XCTUnwrap(defaults.data(forKey: "profiles")), encoding: .utf8)!
+        XCTAssertFalse(json.contains(fixturePassword))
+        model.deleteProfile(profile.id)
+        XCTAssertNil(model.errorMessage)
+        XCTAssertTrue(model.profiles.isEmpty)
+        XCTAssertEqual(model.password(for: profile, returning: false), "")
+        XCTAssertEqual(model.password(for: profile, returning: true), "")
     }
 
     /// Requires tools/fake_mixer.py on this Mac at 127.0.0.1:10024.

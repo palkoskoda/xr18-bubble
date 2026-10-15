@@ -1,6 +1,7 @@
 *.xcodeproj/
 .build/
 DerivedData/
+DeviceDerivedData/
 artifacts/
 *.xcresult/
 .DS_Store
