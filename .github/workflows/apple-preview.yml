@@ -5,12 +5,22 @@ on:
   push:
     branches: [main, 'feature/apple-*']
     paths:
-      - 'apple/**'
+      - 'apple/App/**'
+      - 'apple/Packages/**'
+      - 'apple/Tests/**'
+      - 'apple/UITests/**'
+      - 'apple/project.yml'
+      - 'apple/scripts/**'
       - '.github/workflows/apple-preview.yml'
       - 'tools/fake_mixer.py'
   pull_request:
     paths:
-      - 'apple/**'
+      - 'apple/App/**'
+      - 'apple/Packages/**'
+      - 'apple/Tests/**'
+      - 'apple/UITests/**'
+      - 'apple/project.yml'
+      - 'apple/scripts/**'
       - '.github/workflows/apple-preview.yml'
       - 'tools/fake_mixer.py'
 

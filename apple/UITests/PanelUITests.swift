@@ -32,6 +32,27 @@ final class PanelUITests: XCTestCase {
         // Use its observed frame; the following assertion verifies a real menu opens.
         menu.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
     }
+    private func scrollToControl(_ app: XCUIApplication, _ id: String) -> XCUIElement {
+        for _ in 0..<15 {
+            // Rebuild the query: Form virtualizes rows as they enter/leave the viewport.
+            let control = element(app, id)
+            let window = app.windows.firstMatch.frame
+            if control.exists, control.frame.width > 0 {
+                let y = control.frame.midY
+                if y > window.minY + 110 && y < window.maxY - 50 { return control }
+                if y <= window.minY + 110 {
+                    app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                        .press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7)))
+                    continue
+                }
+            }
+            // Short drags prevent skipping a 44-point row on the compact iPhone.
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
+                .press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)))
+        }
+        XCTFail("Control could not be brought into view: \(id)")
+        return element(app, id)
+    }
     func testDemoMuteAndFader() {
         let app = launch()
         screenshot("iOS-demo-dark")
@@ -82,13 +103,10 @@ final class PanelUITests: XCTestCase {
         app.buttons["panel.mixers"].tap()
         app.buttons["profile.add"].tap()
         XCTAssertTrue(app.textFields["profile.name"].waitForExistence(timeout: 5))
-        let master = element(app, "control.master.selected")
-        for _ in 0..<5 where !master.isHittable { app.swipeUp() }
-        XCTAssertTrue(master.isHittable)
-        master.tap()
-        let mute = element(app, "control.mute1.selected")
-        for _ in 0..<4 where !mute.isHittable { app.swipeUp() }
-        mute.tap()
+        let master = scrollToControl(app, "control.master.selected")
+        master.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        let mute = scrollToControl(app, "control.mute1.selected")
+        mute.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         screenshot("iOS-profile-controls")
         app.buttons["profile.save"].tap()
         app.buttons["mixers.done"].tap()

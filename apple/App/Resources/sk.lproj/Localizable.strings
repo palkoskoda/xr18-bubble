@@ -21,7 +21,7 @@
 "profile.controls" = "Ovládače, ktoré chceš mať poruke";
 "profile.controls.help" = "Vyber aspoň jeden. Kanály, busy a DCA skupiny obsahujú hlasitosť a mute podľa možností mixu. Mute skupine stačí tlačidlo.";
 "profile.delete.title" = "Odstrániť profil mixu?";
-"profile.delete.message" = "Uložený profil aj jeho heslá k Wi-Fi sa odstránia z tohto zariadenia.";
+"profile.delete.message" = "Profil a heslá uložené touto aplikáciou sa odstránia. Wi-Fi siete uložené v iOS spravujete v Nastaveniach.";
 "connection.connect" = "Pripojiť";
 "connection.reconnect" = "Znova pripojiť";
 "status.disconnected" = "Odpojené";

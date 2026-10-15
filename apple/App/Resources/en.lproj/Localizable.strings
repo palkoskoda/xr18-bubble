@@ -21,7 +21,7 @@
 "profile.controls" = "Controls to keep within reach";
 "profile.controls.help" = "Select at least one. Channels, buses and DCA groups include volume and mute where the mixer supports them. Mute groups need just a button.";
 "profile.delete.title" = "Delete mixer profile?";
-"profile.delete.message" = "The saved profile and its Wi-Fi passwords will be removed from this device.";
+"profile.delete.message" = "The profile and passwords stored by this app will be removed. Wi-Fi networks saved by iOS are managed in Settings.";
 "connection.connect" = "Connect";
 "connection.reconnect" = "Reconnect";
 "status.disconnected" = "Disconnected";

@@ -10,7 +10,7 @@ struct PanelSettingsView: View {
                 Section {
                     Picker("settings.controlSize", selection: preference(\.controlSize)) {
                         ForEach(PanelAppearance.sizes, id: \.self) { size in
-                            Text(LocalizedStringKey("size.\(size)")).tag(size)
+                            Text(LocalizedStringKey("size." + size)).tag(size)
                         }
                     }.accessibilityIdentifier("settings.size")
                     Picker("settings.textSize", selection: preference(\.textPercent)) {
