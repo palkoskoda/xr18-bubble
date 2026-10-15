@@ -16,6 +16,12 @@ final class SessionModelTests: XCTestCase {
         model.toggleMute("mute1")
         XCTAssertEqual(model.controls.first?.fader ?? -1, 0.42, accuracy: 0.001)
         XCTAssertEqual(model.controls.last?.muted, true)
+        let oldGesture = model.interactionGeneration
+        model.enterDemo()
+        model.setFader("master", value: 1, expectedGeneration: oldGesture)
+        model.toggleMute("mute1", expectedGeneration: oldGesture)
+        XCTAssertEqual(model.controls.first?.fader ?? -1, 0.65, accuracy: 0.001)
+        XCTAssertEqual(model.controls.last?.muted, false)
         model.savePreferences()
         XCTAssertTrue(model.profiles.isEmpty)
         let restored = SessionModel(defaults: defaults)

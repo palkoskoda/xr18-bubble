@@ -30,11 +30,12 @@ struct MixerRootView: View {
                     ScrollView([.horizontal, .vertical]) {
                         HStack(alignment: .top, spacing: 12 * scale) {
                             ForEach(model.controls) { control in
+                                let generation = model.interactionGeneration
                                 MixerControlCard(control: control, scale: scale,
                                     textScale: CGFloat(model.textPercent) / 100,
                                     interactive: interactive,
-                                    onFader: { model.setFader(control.id, value: $0) },
-                                    onMute: { model.toggleMute(control.id) })
+                                    onFader: { model.setFader(control.id, value: $0, expectedGeneration: generation) },
+                                    onMute: { model.toggleMute(control.id, expectedGeneration: generation) })
                                     .id("\(control.id)-\(model.interactionGeneration)-\(interactive)")
                             }
                         }

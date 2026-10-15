@@ -199,12 +199,14 @@ struct PanelControlState: Identifiable {
             startTransport(profile)
         }
     }
-    func setFader(_ id: String, value: Float) {
+    func setFader(_ id: String, value: Float, expectedGeneration: UUID? = nil) {
+        if let expectedGeneration, expectedGeneration != interactionGeneration { return }
         guard value.isFinite, (0...1).contains(value), let descriptor = ControlCatalog.find(id), let path = descriptor.faderPath else { return }
         if isDemo { demoValues[id]?.fader = value; rebuildControls(); return }
         send(path: path, value: .float(value))
     }
-    func toggleMute(_ id: String) {
+    func toggleMute(_ id: String, expectedGeneration: UUID? = nil) {
+        if let expectedGeneration, expectedGeneration != interactionGeneration { return }
         guard let descriptor = ControlCatalog.find(id), let path = descriptor.mutePath,
               let muted = controls.first(where: { $0.id == id })?.muted else { return }
         if isDemo { demoValues[id]?.muted = !muted; rebuildControls(); return }
