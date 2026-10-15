@@ -54,6 +54,8 @@ jobs:
             ditto -c -k --sequesterRsrc --keepParent apple/DerivedData/Build/Products/Debug-iphonesimulator/XR18Panel.app apple/artifacts/XR18Panel-simulator.zip
           fi
           if [ -f apple/artifacts/fake-mixer.pid ]; then kill "$(cat apple/artifacts/fake-mixer.pid)" || true; fi
+      - name: Audit actual mixer writes
+        run: python3 apple/scripts/audit_fixture.py apple/artifacts/sets.jsonl
       - uses: actions/upload-artifact@v4
         if: always()
         with:

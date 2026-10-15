@@ -21,6 +21,14 @@ swift test --package-path Packages/XR18Core
 
 Select an iOS 17 or later iPhone/iPad simulator in Xcode. The preview CI workflow can also build the simulator target and collect screenshots. A simulator artifact is for Mac review only; it cannot be installed on an iPhone and does not test the device’s Wi-Fi behaviour.
 
+Before running the app-hosted transport test, start the fixture on the same Mac from the repository root:
+
+```sh
+python3 tools/fake_mixer.py --host 127.0.0.1 --meters --log /tmp/xr18-test-sets.jsonl
+```
+
+The transport test verifies initial synchronization, fader/mute readback, live meter reception, and discarded writes before/after connection. The fixture is started automatically in CI. Pure package tests do not require it.
+
 ## Simulator and fixture checks
 
 Use the launch arguments `--demo --ui-testing` for deterministic offline UI checks. Demo mode must never contact an XR18 or send an OSC/UDP packet.

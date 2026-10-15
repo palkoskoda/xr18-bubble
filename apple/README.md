@@ -10,13 +10,13 @@ Planned and implemented port scope:
 - Saved mixer profiles containing the known network details and the selected controls (master, DCA, mute groups, buses, and channels; up to 31 controls).
 - Large control sizes and independent text-size choices, including extra-large accessibility options.
 - XR18 OSC/UDP communication through Apple’s Network framework.
-- Keychain storage for credentials and other sensitive profile data.
+- Wi-Fi passwords stored in this device’s Keychain; profile names, addresses, SSIDs and preferences remain in local app storage.
 - `NEHotspotConfiguration` joins for a configured mixer Wi-Fi network, with a user-visible system approval where iOS requires it.
 - Explicit return profiles for a known previous Wi-Fi network. The app cannot silently read or recover a saved Wi-Fi password from iOS.
 - Fresh-state gating: controls remain unavailable until the app has received a current mixer response after connecting. A successful Wi-Fi join alone is not treated as a connected mixer.
 - An explicit offline demo mode for UI and interaction work. Demo mode never sends packets to a mixer.
 
-The current preview uses manual host entry for the first connection. Broadcast discovery and automatic network scanning are not part of this first pass. The mixer’s IP address and port should therefore be entered in a profile before testing real transport.
+The current preview uses manual host entry for the first connection. Broadcast discovery and automatic network scanning are not part of this first pass. Enter the mixer’s IP address or hostname; the protocol port is fixed at 10024.
 
 ## Build on macOS
 

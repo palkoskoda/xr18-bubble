@@ -28,8 +28,10 @@ final class PanelUITests: XCTestCase {
         mute.tap()
         let fader = app.otherElements["control.master.fader"]
         XCTAssertTrue(fader.exists)
+        let before = app.staticTexts["master.value"].label
         fader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
             .press(forDuration: 0.1, thenDragTo: fader.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25)))
+        XCTAssertNotEqual(app.staticTexts["master.value"].label, before)
         screenshot("iOS-demo-adjusted")
     }
     func testMaximumSizeTextAndSlovak() {

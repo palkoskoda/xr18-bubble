@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import NetworkExtension
 import XR18Core
 
 struct PanelControlState: Identifiable {
@@ -88,7 +89,7 @@ struct PanelControlState: Identifiable {
     func connect() {
         guard !joining, let profile = selectedProfile else { return }
         guard validHost(profile.host) else {
-            errorMessage = "Enter a unicast mixer IP address or hostname, without a port or URL."
+            errorMessage = localized("error.host")
             return
         }
         requested = true; isDemo = false; errorMessage = nil
@@ -114,7 +115,7 @@ struct PanelControlState: Identifiable {
                     } catch {
                         joining = false
                         guard token == operation, !Task.isCancelled else { return }
-                        phaseText = "status.failed"; errorMessage = error.localizedDescription
+                        phaseText = "status.failed"; errorMessage = userFacing(error)
                         return
                     }
                 }
@@ -145,7 +146,6 @@ struct PanelControlState: Identifiable {
         transport.onPacket = { [weak self] data in self?.receive(data, generation: generation) }
         transport.onFailure = { [weak self] description in
             guard let self, self.safety.generation == generation else { return }
-            self.errorMessage = description
             self.recover()
         }
         pollTime = 0; remoteTime = 0; meterTime = 0
@@ -244,22 +244,25 @@ struct PanelControlState: Identifiable {
         }
     }
     func saveProfile(_ profile: MixerProfile, password: String?, returnPassword: String?) {
-        guard !joining else { errorMessage = "Wait for the current Wi-Fi request to finish."; return }
+        guard !joining else { errorMessage = localized("error.busy"); return }
         errorMessage = nil
         var profile = profile
         profile.name = profile.name.trimmingCharacters(in: .whitespacesAndNewlines)
         profile.host = profile.host.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !profile.name.isEmpty, validHost(profile.host), !profile.controls.isEmpty else {
-            errorMessage = "Give the mixer a name, a valid address, and at least one control."; return
+            errorMessage = localized("error.profile"); return
         }
         profile.controls = ControlCatalog.all.filter { profile.controls.contains($0.id) }.map(\.id)
         guard !profile.controls.isEmpty, profile.wifiSSID.utf8.count <= 32, profile.returnSSID.utf8.count <= 32 else {
-            errorMessage = "Choose a known control and a Wi-Fi name of up to 32 bytes."; return
+            errorMessage = localized("error.ssid"); return
+        }
+        if [password, returnPassword].compactMap({ $0 }).contains(where: { !$0.isEmpty && !(8...63).contains($0.utf8.count) }) {
+            errorMessage = localized("error.password"); return
         }
         do {
             if let password { try CredentialStore.write(password, key: credentialKey(profile, returning: false)) }
             if let returnPassword { try CredentialStore.write(returnPassword, key: credentialKey(profile, returning: true)) }
-        } catch { errorMessage = error.localizedDescription; return }
+        } catch { errorMessage = userFacing(error); return }
         let wasDemo = isDemo
         disconnect()
         if let index = profiles.firstIndex(where: { $0.id == profile.id }) { profiles[index] = profile }
@@ -273,7 +276,7 @@ struct PanelControlState: Identifiable {
             do {
                 try CredentialStore.write("", key: credentialKey(profile, returning: false))
                 try CredentialStore.write("", key: credentialKey(profile, returning: true))
-            } catch { errorMessage = error.localizedDescription; return }
+            } catch { errorMessage = userFacing(error); return }
         }
         if selectedProfileID == id { disconnect() }
         profiles.removeAll { $0.id == id }
@@ -308,10 +311,10 @@ struct PanelControlState: Identifiable {
         guard !joining else { return }
         let profile = journey?.profile ?? selectedProfile
         guard let profile, !profile.returnSSID.isEmpty else {
-            errorMessage = "Set up a return Wi-Fi profile first. Otherwise choose your previous network in Settings."; return
+            errorMessage = localized("error.returnMissing"); return
         }
         if let journey, journey.from != profile.returnSSID {
-            errorMessage = "The saved return Wi-Fi differs from the previous network. Choose the previous network in Settings."; return
+            errorMessage = localized("error.returnDifferent"); return
         }
         disconnect(); showingReturnPrompt = false; joining = true
         let token = operation
@@ -324,7 +327,7 @@ struct PanelControlState: Identifiable {
                 stayOnMixerWifi(); phaseText = "status.disconnected"
             } catch {
                 guard token == operation, !Task.isCancelled else { return }
-                phaseText = "status.failed"; errorMessage = error.localizedDescription
+                phaseText = "status.failed"; errorMessage = userFacing(error)
             }
         }
     }
@@ -333,12 +336,34 @@ struct PanelControlState: Identifiable {
               host.unicodeScalars.allSatisfy({ CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-").contains($0) }),
               host != "0.0.0.0", host != "255.255.255.255", !host.hasSuffix(".255") else { return false }
         if host.allSatisfy({ $0.isNumber || $0 == "." }) {
-            let bytes = host.split(separator: ".", omittingEmptySubsequences: false).compactMap { Int($0) }
+            let segments = host.split(separator: ".", omittingEmptySubsequences: false)
+            guard segments.count == 4 else { return false }
+            let bytes = segments.compactMap { Int($0) }
             guard bytes.count == 4, bytes.allSatisfy({ (0...255).contains($0) }), bytes[0] > 0, bytes[0] < 224 else { return false }
             #if !targetEnvironment(simulator)
             if bytes[0] == 127 { return false }
             #endif
-        }
+        } else if host.split(separator: ".", omittingEmptySubsequences: false).contains(where: {
+            $0.isEmpty || $0.count > 63 || $0.first == "-" || $0.last == "-"
+        }) { return false }
         return true
+    }
+    private func localized(_ key: String) -> String {
+        let bundle = language == "system" ? Bundle.main : Bundle.main.path(forResource: language, ofType: "lproj").flatMap(Bundle.init(path:)) ?? Bundle.main
+        return bundle.localizedString(forKey: key, value: nil, table: nil)
+    }
+    private func userFacing(_ error: Error) -> String {
+        if error is CredentialStore.StoreError { return localized("error.keychain") }
+        if let wifiError = error as? WifiService.WifiError {
+            switch wifiError {
+            case .simulator: return localized("error.simulatorWifi")
+            case .unconfirmed: return localized("error.wifiUnconfirmed")
+            }
+        }
+        let ns = error as NSError
+        if ns.domain == NEHotspotConfigurationErrorDomain && ns.code == NEHotspotConfigurationError.userDenied.rawValue {
+            return localized("error.wifiDenied")
+        }
+        return localized("error.wifiFailed")
     }
 }
