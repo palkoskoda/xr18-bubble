@@ -2,6 +2,8 @@
 
 This directory is the initial native Apple port of XR18 Bubble. It targets iOS 17 and later and is intended to provide the same quick-access workflow as the Android app: open a small, focused control panel, connect to a saved XR18 profile, verify a fresh mixer state, and adjust only the controls that are needed most often.
 
+The first preview has passed 27 automated test methods on macOS with Xcode 16.4, including native iPhone SE (3rd generation) and iPad (10th generation) simulator checks. See the [recorded results](TESTING.md#verified-preview-2026-10-15) and [native screenshot gallery](docs/SCREENSHOTS.md). Real-device Wi-Fi switching remains unverified.
+
 The Apple version is designed for iPhone and iPad rather than as an Android-style system overlay. On iPhone it is a normal app with a fast last-used panel. On iPad it can also be used in a compact Slide Over or windowed layout. The user can keep the app in the Dock for quick access. Control Center and App Shortcuts integrations are future work.
 
 Planned and implemented port scope:
@@ -38,6 +40,8 @@ swift test --package-path Packages/XR18Core
 
 For a repeatable preview build, use the repository’s GitHub Actions workflow when available. The workflow produces simulator-oriented screenshots and a simulator app artifact; those artifacts are useful for review on a Mac, but they are not an installable iPhone IPA and are not an App Store release.
 
+The recorded CI simulator app is arm64. Rebuild the source if your simulator uses another architecture. The `apple-preview-phone` and `apple-preview-tablet` CI artifacts contain separate test results, screenshots and simulator bundles.
+
 Simulator builds use a local ad-hoc signature and a separate simulator-only Keychain identity. This does not require an Apple membership or certificate. Physical-device signing uses `XR18Panel.entitlements` and a real development team; the simulator identity must never be used for an archive or device build.
 
 Launch arguments used by the preview contract:
@@ -50,6 +54,8 @@ Launch arguments used by the preview contract:
 The app needs Local Network permission before it can communicate with an XR18 on the same LAN. Joining a configured mixer network can also cause an iOS system confirmation. The app reports the mixer connection only after it receives and validates a fresh state response.
 
 Returning to the previous network is offered only when the user has configured a known return profile. iOS does not expose arbitrary saved Wi-Fi passwords to an application, so the app cannot promise a silent return to every network from which the phone previously disconnected.
+
+Use **Finish session** in the panel menu to offer a return after a verified Wi-Fi change. Backgrounding the app stops mixer communication and keeps the network selected; iOS cannot display an app dialog after you have closed it. A return profile remains a user-configured network, not an arbitrary system-saved Wi-Fi password. See [privacy notes](PRIVACY.md).
 
 Relevant Apple documentation:
 

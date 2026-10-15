@@ -1,5 +1,27 @@
 # Apple preview testing
 
+## Verified preview: 2026-10-15
+
+Feature commit: `f4ade7d`. [Successful GitHub Actions run](https://github.com/palkoskoda/xr18-bubble/actions/runs/38708663324).
+
+The macOS 15 runners used Xcode 16.4 and the iOS 18.5 SDK. Simulator targets were iPhone SE (3rd generation) and iPad (10th generation). Both matrix jobs completed successfully.
+
+| Check | Result |
+| --- | --- |
+| Shared OSC/catalog/meter/session-safety package | 17 test methods passed, including 10,001 taper samples |
+| iPhone app-hosted storage, Keychain, demo isolation and UDP integration | 4 test methods passed |
+| iPhone native UI interactions | 3 test methods passed |
+| iPad native UI interactions | 3 test methods passed |
+| Generic physical-device target, including Wi-Fi API code | Compiled without distribution signing |
+| Actual fake-mixer SET log | Exactly the intended fader and mute writes; no offline/demo writes |
+| EN/SK resources and app metadata preflight | 99 matching keys, valid privacy/entitlements and 1024px icon |
+
+The UI checks use actual touch gestures and verify mute/fader changes, light appearance, 4XL controls with 300% text, Slovak translation, return from settings, menu access after landscape rotation, and a profile containing only a mute-group button. A native picker-label localization issue, unsigned-simulator Keychain access and compact-list test scrolling were corrected before this passing run.
+
+Published [screenshots](docs/SCREENSHOTS.md) are unmodified native portrait captures from this run. The landscape check verifies menu interaction after rotation; the gallery uses settled portrait captures.
+
+These results do not establish real XR18 connectivity or Wi-Fi association on Apple hardware, iOS 26 multitasking behaviour, an App Store-compliant SDK/archive, or App Review acceptance. Repeat the physical-device checks below and build using the SDK required at submission time before a public Apple release.
+
 These checks are intended for the initial iOS 17+ port. They separate deterministic simulator checks from behaviour that can only be proven on a physical iPhone or iPad connected to the relevant Wi-Fi network.
 
 ## macOS setup
