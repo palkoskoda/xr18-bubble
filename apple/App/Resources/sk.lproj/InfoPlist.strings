@@ -1,0 +1,2 @@
+"NSLocalNetworkUsageDescription" = "Pripojenie k vybranému mixu v miestnej sieti umožňuje načítať jeho aktuálny stav a ovládať hlasitosť a mute.";
+"NSLocationWhenInUseUsageDescription" = "Zistenie názvu aktuálnej Wi-Fi pomôže s návratom po používaní siete mixu. Tvoja poloha sa neukladá ani neposiela.";

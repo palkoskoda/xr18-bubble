@@ -42,6 +42,9 @@ def _read_string(packet: bytes, offset: int) -> tuple[str, int]:
 
 def osc_decode(packet: bytes) -> tuple[str, list[Any]]:
     path, offset = _read_string(packet, 0)
+    # X AIR also accepts address-only enquiries.
+    if offset == len(packet):
+        return path, []
     tags, offset = _read_string(packet, offset)
     if not tags.startswith(","):
         raise ValueError("invalid OSC type tag")
@@ -234,6 +237,8 @@ def self_test() -> None:
     client.settimeout(1)
     try:
         target = ("127.0.0.1", mixer.port)
+        client.sendto(osc_string("/xinfo"), target)
+        assert osc_decode(client.recv(4096))[1][2] == "XR18"
         client.sendto(osc_encode("/xinfo"), target)
         assert osc_decode(client.recv(4096))[1] == ["192.168.1.10", "XR18 test", "XR18", "1.20"]
         client.sendto(osc_encode("/xremote"), target)

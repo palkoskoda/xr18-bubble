@@ -1,0 +1,2 @@
+"NSLocalNetworkUsageDescription" = "Connect to your selected mixer on the local network to read its current state and control its volume and mute settings.";
+"NSLocationWhenInUseUsageDescription" = "Read the current Wi-Fi name so the app can help you return after using the mixer network. Your location is not stored or sent.";

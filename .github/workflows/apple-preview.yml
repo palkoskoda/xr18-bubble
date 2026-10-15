@@ -1,0 +1,62 @@
+name: Apple preview
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, 'feature/apple-*']
+    paths: ['apple/**', '.github/workflows/apple-preview.yml', 'tools/fake_mixer.py']
+  pull_request:
+    paths: ['apple/**', '.github/workflows/apple-preview.yml', 'tools/fake_mixer.py']
+permissions:
+  contents: read
+concurrency:
+  group: apple-preview-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  simulator:
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+          xcrun simctl list devices available
+      - name: Test protocol and safety package
+        run: swift test --package-path apple/Packages/XR18Core
+      - name: Generate project
+        run: |
+          brew install xcodegen
+          cd apple
+          xcodegen generate
+      - name: Choose iPhone and iPad simulators
+        run: python3 apple/scripts/choose_simulators.py >> "$GITHUB_ENV"
+      - name: Start local mixer fixture
+        run: |
+          mkdir -p apple/artifacts
+          python3 tools/fake_mixer.py --host 127.0.0.1 --meters --log apple/artifacts/sets.jsonl > apple/artifacts/fake-mixer.log 2>&1 &
+          echo $! > apple/artifacts/fake-mixer.pid
+      - name: Test iPhone simulator
+        run: |
+          xcodebuild test -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination "platform=iOS Simulator,id=$IPHONE_ID" -parallel-testing-enabled NO -derivedDataPath apple/DerivedData CODE_SIGNING_ALLOWED=NO -resultBundlePath apple/artifacts/iPhone.xcresult
+      - name: Test iPad simulator
+        run: |
+          xcodebuild test -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination "platform=iOS Simulator,id=$IPAD_ID" -parallel-testing-enabled NO -derivedDataPath apple/DerivedData CODE_SIGNING_ALLOWED=NO -only-testing:XR18PanelUITests -resultBundlePath apple/artifacts/iPad.xcresult
+      - name: Export screenshots and simulator app
+        if: always()
+        run: |
+          for device in iPhone iPad; do
+            if [ -d "apple/artifacts/$device.xcresult" ]; then
+              xcrun xcresulttool export attachments --path "apple/artifacts/$device.xcresult" --output-path "apple/artifacts/$device-attachments" || true
+            fi
+          done
+          if [ -d apple/DerivedData/Build/Products/Debug-iphonesimulator/XR18Panel.app ]; then
+            ditto -c -k --sequesterRsrc --keepParent apple/DerivedData/Build/Products/Debug-iphonesimulator/XR18Panel.app apple/artifacts/XR18Panel-simulator.zip
+          fi
+          if [ -f apple/artifacts/fake-mixer.pid ]; then kill "$(cat apple/artifacts/fake-mixer.pid)" || true; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apple-preview-results
+          path: apple/artifacts
+          retention-days: 14
