@@ -28,7 +28,7 @@ final class SessionModelTests: XCTestCase {
         restored.startup()
         XCTAssertTrue(restored.isDemo)
         XCTAssertFalse(restored.connected)
-        XCTAssertTrue(restored.profiles.isEmpty)
+        XCTAssertTrue(restored.profiles.isEmpty, restored.errorMessage ?? "Profile was not removed")
         restored.disconnect(); model.disconnect()
     }
 

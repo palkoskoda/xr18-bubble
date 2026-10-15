@@ -38,10 +38,10 @@ jobs:
           echo $! > apple/artifacts/fake-mixer.pid
       - name: Test iPhone simulator
         run: |
-          xcodebuild test -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination "platform=iOS Simulator,id=$IPHONE_ID" -parallel-testing-enabled NO -derivedDataPath apple/DerivedData CODE_SIGNING_ALLOWED=NO -resultBundlePath apple/artifacts/iPhone.xcresult
+          xcodebuild test -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination "platform=iOS Simulator,id=$IPHONE_ID" -parallel-testing-enabled NO -derivedDataPath apple/DerivedData CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- -resultBundlePath apple/artifacts/iPhone.xcresult
       - name: Test iPad simulator
         run: |
-          xcodebuild test -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination "platform=iOS Simulator,id=$IPAD_ID" -parallel-testing-enabled NO -derivedDataPath apple/DerivedData CODE_SIGNING_ALLOWED=NO -only-testing:XR18PanelUITests -resultBundlePath apple/artifacts/iPad.xcresult
+          xcodebuild test -project apple/XR18Panel.xcodeproj -scheme XR18Panel -destination "platform=iOS Simulator,id=$IPAD_ID" -parallel-testing-enabled NO -derivedDataPath apple/DerivedData CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- -only-testing:XR18PanelUITests -resultBundlePath apple/artifacts/iPad.xcresult
       - name: Export screenshots and simulator app
         if: always()
         run: |

@@ -21,7 +21,7 @@ targets:
     platform: iOS
     sources:
       - path: App
-        excludes: [Info.plist, XR18Panel.entitlements]
+        excludes: [Info.plist, XR18Panel.entitlements, Simulator.entitlements]
     dependencies:
       - package: XR18Core
     info:
@@ -48,6 +48,8 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: sk.palkoskoda.xr18panel
         GENERATE_INFOPLIST_FILE: NO
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        'CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]': App/Simulator.entitlements
+        'CODE_SIGN_IDENTITY[sdk=iphonesimulator*]': '-'
   XR18PanelTests:
     type: bundle.unit-test
     platform: iOS
